@@ -20,7 +20,7 @@
 </head>
 <body class="h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
 
-    <!-- Top Navigation -->
+    <!-- Top Navigation Header -->
     <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -33,9 +33,9 @@
                 </div>
             </div>
 
-            <!-- Profile / Discord Auth Status -->
+            <!-- Profile / Auth Header -->
             <div id="authContainer" class="flex items-center gap-3">
-                <!-- Rendered dynamically via JS -->
+                <!-- Dynamic Content -->
             </div>
         </div>
     </header>
@@ -47,6 +47,9 @@
         <div class="flex border-b border-slate-800 gap-2 overflow-x-auto pb-1 scrollbar-none">
             <button onclick="switchTab('pontaj')" id="tab-pontaj" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition bg-indigo-600 text-white">
                 <i class="fa-solid fa-stopwatch"></i> Pontaj Live
+            </button>
+            <button onclick="switchTab('saptamanal')" id="tab-saptamanal" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+                <i class="fa-solid fa-calendar-week"></i> Pontaj Săptămânal
             </button>
             <button onclick="switchTab('angajati')" id="tab-angajati" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
                 <i class="fa-solid fa-users"></i> Tabel Angajați
@@ -62,7 +65,7 @@
             </button>
         </div>
 
-        <!-- Section: PONTAJ -->
+        <!-- Section: PONTAJ LIVE -->
         <section id="section-pontaj" class="tab-content flex flex-col gap-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Status Control Box -->
@@ -74,12 +77,29 @@
                                 OFF DUTY
                             </span>
                         </div>
+                        
                         <div class="text-center py-6 bg-slate-950/60 rounded-xl border border-slate-800/80 mb-4">
                             <div id="dutyTimer" class="text-4xl font-mono font-bold tracking-tight text-slate-300">00:00:00</div>
                             <div class="text-xs text-slate-500 mt-1" id="startTimeLabel">Neînceput</div>
                         </div>
-                        <div id="dutyEligibilityNotice" class="text-xs text-amber-400/90 bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg hidden">
-                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Nu ești înregistrat în Tabelul de Angajați activi. Un Lider/Boss trebuie să te adauge pentru a putea ponta.
+
+                        <!-- Pause Info Box (Visible when On Duty) -->
+                        <div id="pauseControlBox" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400 font-semibold">Timp Pauză Disponibil:</span>
+                                <span id="pauseAllowanceLabel" class="font-mono font-bold text-amber-400">05:00 min</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400 font-semibold">Pauză Folosită:</span>
+                                <span id="pauseUsedLabel" class="font-mono font-bold text-slate-300">00:00 min</span>
+                            </div>
+                            <button id="pauseToggleBtn" onclick="togglePause()" class="w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30">
+                                <i class="fa-solid fa-mug-hot"></i> Ia o Pauză (5m / Oră)
+                            </button>
+                        </div>
+
+                        <div id="dutyEligibilityNotice" class="text-xs text-amber-400/90 bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg mt-3 hidden">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Nu ai drept de pontaj. Trebuie să fii adăugat în Tabelul Angajaților cu Discord ID de către un Boss.
                         </div>
                     </div>
                     <div>
@@ -89,7 +109,7 @@
                     </div>
                 </div>
 
-                <!-- Active On-Duty People -->
+                <!-- Active On-Duty People Table -->
                 <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-base font-bold text-slate-200 flex items-center gap-2">
@@ -104,7 +124,8 @@
                                     <th class="p-3">Angajat</th>
                                     <th class="p-3">Grad</th>
                                     <th class="p-3">Ora Start</th>
-                                    <th class="p-3">Timp Scurs</th>
+                                    <th class="p-3">Pauză Folosită</th>
+                                    <th class="p-3">Timp Lucrat</th>
                                 </tr>
                             </thead>
                             <tbody id="activeDutyTable" class="divide-y divide-slate-800/50">
@@ -116,17 +137,17 @@
             </div>
         </section>
 
-        <!-- Section: TABEL ANGAJATI -->
-        <section id="section-angajati" class="tab-content hidden flex flex-col gap-6">
+        <!-- Section: PONTAJ SAPTAMANAL -->
+        <section id="section-saptamanal" class="tab-content hidden flex flex-col gap-6">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-100">Registru Angajați Officiale</h2>
-                        <p class="text-xs text-slate-400">Doar gradele Management (Boss / Lider) pot adăuga sau elimina angajați.</p>
+                        <h2 class="text-lg font-bold text-slate-100"><i class="fa-solid fa-chart-pie text-indigo-400 mr-2"></i>Raport Ore Săptămânale</h2>
+                        <p class="text-xs text-slate-400">Totalul orelor efectuate de angajați în săptămâna în curs.</p>
                     </div>
-                    <div id="addEmployeeContainer" class="hidden">
-                        <button onclick="openAddEmployeeModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md">
-                            <i class="fa-solid fa-user-plus"></i> Adaugă Angajat
+                    <div id="resetWeeklyContainer" class="hidden">
+                        <button onclick="resetWeeklyHours()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition">
+                            <i class="fa-solid fa-rotate-right"></i> Resetează Săptămâna
                         </button>
                     </div>
                 </div>
@@ -135,11 +156,45 @@
                     <table class="w-full text-left text-sm text-slate-300">
                         <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
                             <tr>
-                                <th class="p-3">Nume / Discord Tag</th>
+                                <th class="p-3">Angajat</th>
+                                <th class="p-3">Discord ID</th>
+                                <th class="p-3">Grad</th>
+                                <th class="p-3">Ture Finalizate</th>
+                                <th class="p-3 font-bold text-indigo-400">Total Ore Săptămână</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weeklyTable" class="divide-y divide-slate-800/50">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: TABEL ANGAJATI -->
+        <section id="section-angajati" class="tab-content hidden flex flex-col gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-100">Registru Angajați Oficiali</h2>
+                        <p class="text-xs text-slate-400">Adăugarea se face obligatoriu pe baza Discord ID-ului numeric.</p>
+                    </div>
+                    <div id="addEmployeeContainer" class="hidden">
+                        <button onclick="openAddEmployeeModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md">
+                            <i class="fa-solid fa-user-plus"></i> Adaugă Angajat cu Discord ID
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Nume / Angajat</th>
+                                <th class="p-3">Discord ID (Obligatoriu)</th>
                                 <th class="p-3">Grad Companie</th>
                                 <th class="p-3">Data Angajării</th>
-                                <th class="p-3">Drept Pontaj</th>
-                                <th class="p-3 text-right" id="actionHeader">Acțiuni</th>
+                                <th class="p-3 text-right">Acțiuni</th>
                             </tr>
                         </thead>
                         <tbody id="employeesTable" class="divide-y divide-slate-800/50">
@@ -155,8 +210,8 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-100">Istoric & Rapoarte Pontaj</h2>
-                        <p class="text-xs text-slate-400">Toate turele finalizate. Supervizorii și Liderii pot anula pontaje eronate specificând un motiv.</p>
+                        <h2 class="text-lg font-bold text-slate-100">Istoric & Rapoarte Individuale</h2>
+                        <p class="text-xs text-slate-400">Toate turele finalizate. Supervizorii/Boss pot anula pontaje eronate cu motiv.</p>
                     </div>
                 </div>
 
@@ -167,7 +222,7 @@
                                 <th class="p-3">Angajat</th>
                                 <th class="p-3">Data</th>
                                 <th class="p-3">Interval</th>
-                                <th class="p-3">Durată Totale</th>
+                                <th class="p-3">Timp Lucrat Efectiv</th>
                                 <th class="p-3">Stare</th>
                                 <th class="p-3 text-right">Acțiuni</th>
                             </tr>
@@ -186,7 +241,7 @@
                 <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-slate-100"><i class="fa-solid fa-radio text-indigo-400 mr-2"></i>Coduri & Stări Radio FPlayT</h2>
-                        <p class="text-xs text-slate-400">Click pe un cod pentru a-l copia rapid în clipboard pentru transmisia radio IC.</p>
+                        <p class="text-xs text-slate-400">Click pe un cod pentru a-l copia rapid în clipboard.</p>
                     </div>
                     <div class="w-full sm:w-64">
                         <input type="text" id="radioSearch" onkeyup="filterRadioCodes()" placeholder="Caută cod radio..." class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
@@ -204,32 +259,41 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-6">
                 <div>
                     <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-book-open text-indigo-400"></i> Ghid Oficial Montevaro SRL - FPlayT
+                        <i class="fa-solid fa-book-open text-indigo-400"></i> Regulament Intern Montevaro SRL
                     </h2>
-                    <p class="text-sm text-slate-400 mt-1">Reguli interne, obligații și procedura corectă de pontaj.</p>
+                    <p class="text-sm text-slate-400 mt-1">Proceduri de operare, pontaj și pauze.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
                         <h3 class="font-semibold text-indigo-400 flex items-center gap-2">
-                            <i class="fa-solid fa-check-circle"></i> Regulament Pontaj
+                            <i class="fa-solid fa-check-circle"></i> Reguli Pontaj
                         </h3>
                         <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
-                            <li>Pontajul se pornește strict când sunteți în joc pe frecvența radio a firmei și echipat corespunzător.</li>
-                            <li>Pauzele mai lungi de 10 minute necesită ieșirea temporară Off Duty.</li>
-                            <li>Neanunțarea pe radio la intrarea sau ieșirea On Duty se sancționează.</li>
-                            <li>Anularea intenționat eronată a pontajelor atrage sancțiuni directe de la Lideri.</li>
+                            <li>Doar utilizatorii adăugați de un Boss cu Discord ID pot porni pontajul.</li>
+                            <li>Neanunțarea pe radio la intrare/ieșire atrage sancțiuni.</li>
+                            <li>Anularea intenționat eronată a pontajelor se pedepsește direct.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+                        <h3 class="font-semibold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-mug-hot"></i> Regula Pauzei (5 min/h)
+                        </h3>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
+                            <li>Ai dreptul la maxim 5 minute pauză acumulată pentru fiecare oră de pontaj.</li>
+                            <li>Pauza se pornește și se oprește direct din panoul de control.</li>
+                            <li>Depășirea timpului de pauză aduce anularea turei curente.</li>
                         </ul>
                     </div>
 
                     <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
                         <h3 class="font-semibold text-emerald-400 flex items-center gap-2">
-                            <i class="fa-solid fa-walkie-talkie"></i> Protocol Comunicații Radio
+                            <i class="fa-solid fa-walkie-talkie"></i> Protocol Radio
                         </h3>
                         <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
-                            <li>Anunțați fiecare starea: 10-8 (On Duty), 10-7 (Off Duty), 10-6 (Ocupat/Pauză).</li>
-                            <li>Comunicați clar, scurt și fără spam pe frecvența radio.</li>
-                            <li>Codurile 10-20 (Locație) și 10-4 (Am înțeles) sunt obligatorii în operare.</li>
+                            <li>Utilizați codurile radio standard (10-8, 10-7, 10-6).</li>
+                            <li>Comunicați scurt și la obiect pe frecvența companiei.</li>
                         </ul>
                     </div>
                 </div>
@@ -238,17 +302,22 @@
 
     </main>
 
-    <!-- Modal: Adaugare Angajat -->
+    <!-- Modal: Adaugare Angajat prin Discord ID -->
     <div id="addEmployeeModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-slate-100">Adaugă Angajat în Tabel</h3>
+                <h3 class="font-bold text-slate-100">Adaugă Angajat (Discord ID Mandatory)</h3>
                 <button onclick="closeAddEmployeeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nume În Joc / Discord Tag</label>
-                    <input type="text" id="newEmpName" placeholder="ex: Ion Popescu (@ion.popescu)" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nume Angajat / Joc *</label>
+                    <input type="text" id="newEmpName" placeholder="ex: Ion Popescu" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-amber-400 mb-1">Discord ID Numeric (Obligatoriu) *</label>
+                    <input type="text" id="newEmpDiscordId" placeholder="ex: 394857201948572910" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                    <p class="text-[10px] text-slate-500 mt-1">Apasă click dreapta pe utilizatorul de Discord -> Copy User ID.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Grad Afacere</label>
@@ -261,7 +330,7 @@
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button onclick="closeAddEmployeeModal()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Anulează</button>
-                <button onclick="saveNewEmployee()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500">Adaugă</button>
+                <button onclick="saveNewEmployee()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500">Adaugă Angajat</button>
             </div>
         </div>
     </div>
@@ -273,10 +342,10 @@
                 <h3 class="font-bold text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Anulare Pontaj</h3>
                 <button onclick="closeCancelModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p class="text-xs text-slate-300">Această acțiune va invalida orele de pontaj ale angajatului. Este obligatoriu să specificați motivul mai jos.</p>
+            <p class="text-xs text-slate-300">Este obligatoriu să specificați motivul mai jos pentru audit.</p>
             <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-1">Motiv Anulare *</label>
-                <textarea id="cancelReasonInput" rows="3" placeholder="Introduceți motivul (ex: AFK neanunțat / Pontaj fals)..." class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg p-3 text-slate-200 focus:outline-none focus:border-rose-500"></textarea>
+                <textarea id="cancelReasonInput" rows="3" placeholder="Motivul anulării (ex: AFK prelungit fără pauză)..." class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg p-3 text-slate-200 focus:outline-none focus:border-rose-500"></textarea>
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button onclick="closeCancelModal()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Renunță</button>
@@ -285,9 +354,8 @@
         </div>
     </div>
 
-    <!-- Application Script -->
+    <!-- Application Script Logic -->
     <script>
-        // CONFIGURARE DISCORD OAUTH2 PENTRU INTEGRARAEA TA DIRECTA
         const DISCORD_CLIENT_ID = "1561848481642057869";
         const GUILD_ID = "1416528931762340023";
         const REDIRECT_URI = "https://crocghim2.github.io/montevaro-srl/";
@@ -298,7 +366,6 @@
             MEMBER: ["1416539879323599011", "1416539746414493877"]
         };
 
-        // RADIO CODES DATA
         const RADIO_CODES = [
             { code: "10-4", title: "Am Înțeles / Recepționat", desc: "Aconfirmare recepționare mesaj radio." },
             { code: "10-6", title: "Ocupat", desc: "Ocupat cu o activitate temporară, disponibil doar pentru urgențe." },
@@ -309,29 +376,24 @@
             { code: "10-99", title: "Urgență Majoră", desc: "Situație critică, intervenție imediată necesară." }
         ];
 
-        // STATE INITIALIZATION FROM LOCALSTORAGE
+        // STATE MANAGED VIA LOCALSTORAGE
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-        let employees = JSON.parse(localStorage.getItem('employees')) || [
-            { id: 1, name: "Manager Montevaro", rank: "Boss", dateAdded: "2026-01-01" }
-        ];
+        let employees = JSON.parse(localStorage.getItem('employees')) || [];
         let historyLogs = JSON.parse(localStorage.getItem('historyLogs')) || [];
         let activePontajs = JSON.parse(localStorage.getItem('activePontajs')) || [];
 
         let currentCancelTargetId = null;
-        let timerInterval = null;
 
-        // INIT ON LOAD
         document.addEventListener('DOMContentLoaded', () => {
             handleDiscordCallback();
             renderAuthStatus();
             renderRadioCodes();
             checkAndRenderAll();
 
-            // Timer Tick
-            timerInterval = setInterval(updateTimerUI, 1000);
+            setInterval(updateTimerUI, 1000);
         });
 
-        // DISCORD OAUTH2 FLOW
+        // DISCORD OAUTH2 AUTHENTICATION
         function loginWithDiscord() {
             const oauth2Url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20guilds.members.read`;
             window.location.href = oauth2Url;
@@ -354,44 +416,26 @@
                     });
                     const guildData = await guildRes.json();
 
-                    if (!guildData || !guildData.roles) {
-                        alert("Nu ești membru pe serverul de Discord Montevaro SRL!");
-                        return;
+                    let computedRank = 'Vizitator';
+
+                    if (guildData && guildData.roles) {
+                        const userRoles = guildData.roles;
+                        if (userRoles.some(r => DISCORD_ROLES.BOSS.includes(r))) {
+                            computedRank = 'Boss';
+                        } else if (userRoles.some(r => DISCORD_ROLES.SUPERVISOR.includes(r))) {
+                            computedRank = 'Supervizor';
+                        } else if (userRoles.some(r => DISCORD_ROLES.MEMBER.includes(r))) {
+                            computedRank = 'Membru';
+                        }
                     }
-
-                    const userRoles = guildData.roles;
-                    let computedRank = 'Fara Acces';
-
-                    if (userRoles.some(roleId => DISCORD_ROLES.BOSS.includes(roleId))) {
-                        computedRank = 'Boss';
-                    } else if (userRoles.some(roleId => DISCORD_ROLES.SUPERVISOR.includes(roleId))) {
-                        computedRank = 'Supervizor';
-                    } else if (userRoles.some(roleId => DISCORD_ROLES.MEMBER.includes(roleId))) {
-                        computedRank = 'Membru';
-                    } else {
-                        alert("Nu deții niciun grad cu acces pentru acest site!");
-                        return;
-                    }
-
-                    const name = guildData.nick || userData.global_name || userData.username;
 
                     currentUser = {
-                        name: name,
+                        id: userData.id,
+                        name: guildData?.nick || userData.global_name || userData.username,
                         discordTag: `@${userData.username}`,
                         avatar: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : null,
                         rank: computedRank
                     };
-
-                    // Auto-add to employee list if Boss or Supervisor or new Member
-                    if (!employees.some(e => e.name.toLowerCase() === name.toLowerCase())) {
-                        employees.push({
-                            id: Date.now(),
-                            name: name,
-                            rank: computedRank,
-                            dateAdded: new Date().toISOString().split('T')[0]
-                        });
-                        saveEmployees();
-                    }
 
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     renderAuthStatus();
@@ -409,15 +453,21 @@
             checkAndRenderAll();
         }
 
-        // PERMISSION CHECKS
+        // PERMISSION HELPERS
         function isBoss() { return currentUser && currentUser.rank === 'Boss'; }
         function isSupervisor() { return currentUser && (currentUser.rank === 'Boss' || currentUser.rank === 'Supervizor'); }
-        function isInEmployeeTable() {
-            if (!currentUser) return false;
-            return employees.some(e => e.name.toLowerCase() === currentUser.name.toLowerCase());
+        
+        function getMatchingEmployee() {
+            if (!currentUser || !currentUser.id) return null;
+            return employees.find(e => String(e.discordId).trim() === String(currentUser.id).trim());
         }
 
-        // RENDER AUTH HEADER
+        function canUserDuty() {
+            if (!currentUser || currentUser.rank === 'Vizitator') return false;
+            return getMatchingEmployee() !== undefined && getMatchingEmployee() !== null;
+        }
+
+        // AUTH HEADER RENDER
         function renderAuthStatus() {
             const container = document.getElementById('authContainer');
             if (!currentUser) {
@@ -433,7 +483,7 @@
                         <div class="text-left">
                             <div class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                                 ${currentUser.name}
-                                <span class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${currentUser.rank === 'Boss' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : currentUser.rank === 'Supervizor' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-slate-800 text-slate-300'}">${currentUser.rank}</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${currentUser.rank === 'Boss' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : currentUser.rank === 'Supervizor' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : currentUser.rank === 'Membru' ? 'bg-slate-800 text-slate-300' : 'bg-slate-800/50 text-slate-500'}">${currentUser.rank}</span>
                             </div>
                             <div class="text-[10px] text-slate-400">${currentUser.discordTag}</div>
                         </div>
@@ -443,75 +493,85 @@
             }
         }
 
-        // RENDER TAB CONTROLS & VIEWS
         function checkAndRenderAll() {
-            // Employee Management Visibility
             document.getElementById('addEmployeeContainer').className = isBoss() ? 'block' : 'hidden';
+            document.getElementById('resetWeeklyContainer').className = isBoss() ? 'block' : 'hidden';
 
-            // Active Duty Button Logic
             const toggleBtn = document.getElementById('toggleDutyBtn');
             const notice = document.getElementById('dutyEligibilityNotice');
+            const pauseBox = document.getElementById('pauseControlBox');
 
             if (!currentUser) {
                 toggleBtn.disabled = true;
                 toggleBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Conectează-te cu Discord';
                 notice.classList.add('hidden');
-            } else if (!isInEmployeeTable()) {
+                pauseBox.classList.add('hidden');
+            } else if (!canUserDuty()) {
                 toggleBtn.disabled = true;
-                toggleBtn.innerHTML = '<i class="fa-solid fa-ban"></i> Fără Drept de Pontaj';
+                toggleBtn.innerHTML = '<i class="fa-solid fa-ban"></i> Fără Acces Pontaj (Vizitator / Fără ID)';
                 notice.classList.remove('hidden');
+                pauseBox.classList.add('hidden');
             } else {
                 notice.classList.add('hidden');
-                const isUserOnDuty = activePontajs.some(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+                const isUserOnDuty = activePontajs.some(p => String(p.discordId) === String(currentUser.id));
                 if (isUserOnDuty) {
                     toggleBtn.disabled = false;
                     toggleBtn.className = "w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-lg bg-rose-600 hover:bg-rose-500 text-white";
                     toggleBtn.innerHTML = '<i class="fa-solid fa-stop"></i> Oprește Pontajul (Off Duty)';
+                    pauseBox.classList.remove('hidden');
                 } else {
                     toggleBtn.disabled = false;
                     toggleBtn.className = "w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white";
                     toggleBtn.innerHTML = '<i class="fa-solid fa-play"></i> Intră On Duty';
+                    pauseBox.classList.add('hidden');
                 }
             }
 
             renderEmployeesTable();
             renderActiveDutyTable();
             renderHistoryTable();
+            renderWeeklyTable();
         }
 
-        // DUTY ACTIONS
+        // PONTAJ ACTIONS
         function toggleDuty() {
-            if (!currentUser || !isInEmployeeTable()) return;
+            if (!currentUser || !canUserDuty()) return;
 
-            const existingIndex = activePontajs.findIndex(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+            const existingIndex = activePontajs.findIndex(p => String(p.discordId) === String(currentUser.id));
 
             if (existingIndex !== -1) {
-                // STOP PONTAJ
                 const pontaj = activePontajs[existingIndex];
                 const endTime = new Date();
                 const startTime = new Date(pontaj.startTime);
-                const durationSeconds = Math.floor((endTime - startTime) / 1000);
+                
+                const totalElapsedSec = Math.floor((endTime - startTime) / 1000);
+                const workedSec = Math.max(0, totalElapsedSec - (pontaj.pauseUsedSec || 0));
 
                 historyLogs.unshift({
                     id: Date.now(),
-                    name: pontaj.name,
-                    rank: pontaj.rank,
+                    discordId: currentUser.id,
+                    name: currentUser.name,
+                    rank: currentUser.rank,
                     date: startTime.toISOString().split('T')[0],
                     startTime: startTime.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }),
                     endTime: endTime.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }),
-                    duration: formatSeconds(durationSeconds),
+                    workedSec: workedSec,
+                    duration: formatSeconds(workedSec),
                     status: 'Valabil',
                     cancelReason: null
                 });
 
                 activePontajs.splice(existingIndex, 1);
             } else {
-                // START PONTAJ
                 activePontajs.push({
                     id: Date.now(),
+                    discordId: currentUser.id,
                     name: currentUser.name,
                     rank: currentUser.rank,
-                    startTime: new Date().toISOString()
+                    startTime: new Date().toISOString(),
+                    isPaused: false,
+                    pauseStart: null,
+                    pauseUsedSec: 0
                 });
             }
 
@@ -520,25 +580,68 @@
             checkAndRenderAll();
         }
 
-        // TIMER LOOP
+        function togglePause() {
+            if (!currentUser) return;
+            const pontaj = activePontajs.find(p => String(p.discordId) === String(currentUser.id));
+            if (!pontaj) return;
+
+            if (pontaj.isPaused) {
+                // UNPAUSE
+                const pauseDuration = Math.floor((new Date() - new Date(pontaj.pauseStart)) / 1000);
+                pontaj.pauseUsedSec = (pontaj.pauseUsedSec || 0) + pauseDuration;
+                pontaj.isPaused = false;
+                pontaj.pauseStart = null;
+            } else {
+                // PAUSE
+                pontaj.isPaused = true;
+                pontaj.pauseStart = new Date().toISOString();
+            }
+
+            savePontajs();
+            checkAndRenderAll();
+        }
+
+        // REAL-TIME TIMER UPDATE
         function updateTimerUI() {
             if (!currentUser) return;
 
-            const myActive = activePontajs.find(p => p.name.toLowerCase() === currentUser.name.toLowerCase());
+            const pontaj = activePontajs.find(p => String(p.discordId) === String(currentUser.id));
             const timerEl = document.getElementById('dutyTimer');
             const badgeEl = document.getElementById('dutyBadge');
             const startLabel = document.getElementById('startTimeLabel');
+            const pauseBtn = document.getElementById('pauseToggleBtn');
 
-            if (myActive) {
-                const diff = Math.floor((new Date() - new Date(myActive.startTime)) / 1000);
-                timerEl.textContent = formatSeconds(diff);
-                timerEl.className = "text-4xl font-mono font-bold tracking-tight text-emerald-400";
-                badgeEl.textContent = "ON DUTY";
-                badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-                startLabel.textContent = `Inceput la: ${new Date(myActive.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}`;
+            if (pontaj) {
+                const now = new Date();
+                const totalSec = Math.floor((now - new Date(pontaj.startTime)) / 1000);
+                
+                let currentPauseSec = pontaj.pauseUsedSec || 0;
+                if (pontaj.isPaused) {
+                    currentPauseSec += Math.floor((now - new Date(pontaj.pauseStart)) / 1000);
+                }
+
+                const workedSec = Math.max(0, totalSec - currentPauseSec);
+                const allowedPauseSec = Math.floor(workedSec / 3600) * 300 + 300; // 5 min per hour
+
+                timerEl.textContent = formatSeconds(workedSec);
+                startLabel.textContent = `Inceput la: ${new Date(pontaj.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}`;
+
+                document.getElementById('pauseAllowanceLabel').textContent = `${formatSeconds(allowedPauseSec).slice(3)} min`;
+                document.getElementById('pauseUsedLabel').textContent = `${formatSeconds(currentPauseSec).slice(3)} min`;
+
+                if (pontaj.isPaused) {
+                    badgeEl.textContent = "IN PAUZA";
+                    badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    pauseBtn.className = "w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30";
+                    pauseBtn.innerHTML = '<i class="fa-solid fa-play"></i> Reia Pontajul (Ieși din Pauză)';
+                } else {
+                    badgeEl.textContent = "ON DUTY";
+                    badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                    pauseBtn.className = "w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30";
+                    pauseBtn.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Ia o Pauză (5m / Oră)';
+                }
             } else {
                 timerEl.textContent = "00:00:00";
-                timerEl.className = "text-4xl font-mono font-bold tracking-tight text-slate-300";
                 badgeEl.textContent = "OFF DUTY";
                 badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700";
                 startLabel.textContent = "Neînceput";
@@ -547,24 +650,30 @@
             renderActiveDutyTable();
         }
 
-        // RENDER TABLES
+        // TABLES RENDERING
         function renderActiveDutyTable() {
             const table = document.getElementById('activeDutyTable');
             document.getElementById('activeCount').textContent = `${activePontajs.length} Activi`;
 
             if (activePontajs.length === 0) {
-                table.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Niciun angajat On Duty în acest moment.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Niciun angajat On Duty.</td></tr>`;
                 return;
             }
 
+            const now = new Date();
             table.innerHTML = activePontajs.map(p => {
-                const elapsedSec = Math.floor((new Date() - new Date(p.startTime)) / 1000);
+                const totalSec = Math.floor((now - new Date(p.startTime)) / 1000);
+                let currentPauseSec = p.pauseUsedSec || 0;
+                if (p.isPaused) currentPauseSec += Math.floor((now - new Date(p.pauseStart)) / 1000);
+                const workedSec = Math.max(0, totalSec - currentPauseSec);
+
                 return `
                     <tr class="hover:bg-slate-800/30">
                         <td class="p-3 font-semibold text-slate-200">${p.name}</td>
                         <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">${p.rank}</span></td>
                         <td class="p-3 text-xs text-slate-400">${new Date(p.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</td>
-                        <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(elapsedSec)}</td>
+                        <td class="p-3 font-mono text-xs text-amber-400">${formatSeconds(currentPauseSec)}</td>
+                        <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(workedSec)}</td>
                     </tr>
                 `;
             }).join('');
@@ -572,17 +681,46 @@
 
         function renderEmployeesTable() {
             const table = document.getElementById('employeesTable');
+            if (employees.length === 0) {
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Niciun angajat adăugat cu Discord ID în registru.</td></tr>`;
+                return;
+            }
+
             table.innerHTML = employees.map(e => `
                 <tr class="hover:bg-slate-800/30">
                     <td class="p-3 font-medium text-slate-200">${e.name}</td>
+                    <td class="p-3 font-mono text-xs text-amber-400">${e.discordId}</td>
                     <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold">${e.rank}</span></td>
                     <td class="p-3 text-xs text-slate-400">${e.dateAdded}</td>
-                    <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold"><i class="fa-solid fa-check mr-1"></i>Activ</span></td>
                     <td class="p-3 text-right">
                         ${isBoss() ? `<button onclick="removeEmployee(${e.id})" class="text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 transition"><i class="fa-solid fa-user-minus"></i> Elimină</button>` : `<span class="text-xs text-slate-600">-</span>`}
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function renderWeeklyTable() {
+            const table = document.getElementById('weeklyTable');
+            if (employees.length === 0) {
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Niciun angajat înregistrat.</td></tr>`;
+                return;
+            }
+
+            table.innerHTML = employees.map(e => {
+                const userLogs = historyLogs.filter(h => String(h.discordId) === String(e.discordId) && h.status === 'Valabil');
+                const totalSec = userLogs.reduce((acc, log) => acc + (log.workedSec || 0), 0);
+                const shiftCount = userLogs.length;
+
+                return `
+                    <tr class="hover:bg-slate-800/30">
+                        <td class="p-3 font-medium text-slate-200">${e.name}</td>
+                        <td class="p-3 font-mono text-xs text-slate-400">${e.discordId}</td>
+                        <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">${e.rank}</span></td>
+                        <td class="p-3 text-xs text-slate-300 font-semibold">${shiftCount} ture</td>
+                        <td class="p-3 font-mono font-bold text-sm text-indigo-400">${formatSeconds(totalSec)}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function renderHistoryTable() {
@@ -618,19 +756,28 @@
             }).join('');
         }
 
-        // EMPLOYEE MANAGEMENT MODAL & ACTIONS
+        // EMPLOYEE MANAGEMENT
         function openAddEmployeeModal() { document.getElementById('addEmployeeModal').classList.remove('hidden'); }
         function closeAddEmployeeModal() { document.getElementById('addEmployeeModal').classList.add('hidden'); }
 
         function saveNewEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
+            const discordId = document.getElementById('newEmpDiscordId').value.trim();
             const rank = document.getElementById('newEmpRank').value;
 
-            if (!name) return alert("Introduceți numele sau tag-ul de Discord!");
+            if (!name) return alert("Introduceți numele angajatului!");
+            if (!discordId || isNaN(discordId) || discordId.length < 15) {
+                return alert("Introduceți un Discord ID numeric valid (ex: 394857201948572910)!");
+            }
+
+            if (employees.some(e => String(e.discordId).trim() === discordId)) {
+                return alert("Acest Discord ID există deja în registrul angajaților!");
+            }
 
             employees.push({
                 id: Date.now(),
                 name: name,
+                discordId: discordId,
                 rank: rank,
                 dateAdded: new Date().toISOString().split('T')[0]
             });
@@ -638,18 +785,29 @@
             saveEmployees();
             closeAddEmployeeModal();
             document.getElementById('newEmpName').value = '';
+            document.getElementById('newEmpDiscordId').value = '';
             checkAndRenderAll();
         }
 
         function removeEmployee(id) {
-            if (confirm("Sigur dorești să elimini acest angajat din tabel? Nu va mai putea ponta!")) {
+            if (confirm("Sigur dorești să elimini acest angajat? El nu va mai putea porni pontajul.")) {
                 employees = employees.filter(e => e.id !== id);
                 saveEmployees();
                 checkAndRenderAll();
             }
         }
 
-        // CANCEL PONTAJ MODAL & ACTIONS
+        function resetWeeklyHours() {
+            if (!isBoss()) return;
+            if (confirm("Ești sigur că dorești să resetezi toate orele săptămânale? Această acțiune este ireversibilă.")) {
+                historyLogs = [];
+                saveHistory();
+                checkAndRenderAll();
+                alert("Orele săptămânale au fost resetate cu succes!");
+            }
+        }
+
+        // CANCELLATION MODAL
         function openCancelModal(id) {
             currentCancelTargetId = id;
             document.getElementById('cancelReasonInput').value = '';
@@ -663,7 +821,7 @@
 
         function confirmCancelPontaj() {
             const reason = document.getElementById('cancelReasonInput').value.trim();
-            if (!reason) return alert("Specificarea motivului de anulare este OBLIGATORIE!");
+            if (!reason) return alert("Motivul de anulare este OBLIGATORIU!");
 
             const log = historyLogs.find(h => h.id === currentCancelTargetId);
             if (log) {
@@ -671,6 +829,7 @@
                 log.cancelReason = reason;
                 saveHistory();
                 renderHistoryTable();
+                renderWeeklyTable();
             }
 
             closeCancelModal();
@@ -698,8 +857,7 @@
         }
 
         function filterRadioCodes() {
-            const query = document.getElementById('radioSearch').value;
-            renderRadioCodes(query);
+            renderRadioCodes(document.getElementById('radioSearch').value);
         }
 
         function copyToClipboard(text) {
@@ -707,7 +865,7 @@
             alert(`Codul radio "${text}" a fost copiat în clipboard!`);
         }
 
-        // TAB SWITCHING
+        // TAB NAVIGATION
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.className = "tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900";
