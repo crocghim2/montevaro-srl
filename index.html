@@ -33,9 +33,9 @@
                 </div>
             </div>
 
-            <!-- Profile / Auth Header -->
+            <!-- Profile / Auth Header (Shows Discord Rank) -->
             <div id="authContainer" class="flex items-center gap-3">
-                <!-- Dynamic Content -->
+                <!-- Dynamic Content via JS -->
             </div>
         </div>
     </header>
@@ -122,7 +122,7 @@
                             <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
                                 <tr>
                                     <th class="p-3">Angajat</th>
-                                    <th class="p-3">Grad</th>
+                                    <th class="p-3">Grad Discord</th>
                                     <th class="p-3">Ora Start</th>
                                     <th class="p-3">Pauză Folosită</th>
                                     <th class="p-3">Timp Lucrat</th>
@@ -158,7 +158,7 @@
                             <tr>
                                 <th class="p-3">Angajat</th>
                                 <th class="p-3">Discord ID</th>
-                                <th class="p-3">Grad</th>
+                                <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Ture Finalizate</th>
                                 <th class="p-3 font-bold text-indigo-400">Total Ore Săptămână</th>
                             </tr>
@@ -192,7 +192,7 @@
                             <tr>
                                 <th class="p-3">Nume / Angajat</th>
                                 <th class="p-3">Discord ID (Obligatoriu)</th>
-                                <th class="p-3">Grad Companie</th>
+                                <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Data Angajării</th>
                                 <th class="p-3 text-right">Acțiuni</th>
                             </tr>
@@ -220,6 +220,7 @@
                         <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
                             <tr>
                                 <th class="p-3">Angajat</th>
+                                <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Data</th>
                                 <th class="p-3">Interval</th>
                                 <th class="p-3">Timp Lucrat Efectiv</th>
@@ -320,7 +321,7 @@
                     <p class="text-[10px] text-slate-500 mt-1">Apasă click dreapta pe utilizatorul de Discord -> Copy User ID.</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Grad Afacere</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Grad Afacere / Discord</label>
                     <select id="newEmpRank" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
                         <option value="Membru">Membru / Angajat</option>
                         <option value="Supervizor">Supervizor / Co-Lider</option>
@@ -467,6 +468,18 @@
             return getMatchingEmployee() !== undefined && getMatchingEmployee() !== null;
         }
 
+        function getRankBadgeHTML(rank) {
+            if (rank === 'Boss') {
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20"><i class="fa-solid fa-crown text-[9px] mr-1"></i>Boss</span>`;
+            } else if (rank === 'Supervizor') {
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20"><i class="fa-solid fa-user-shield text-[9px] mr-1"></i>Supervizor</span>`;
+            } else if (rank === 'Membru') {
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><i class="fa-solid fa-user text-[9px] mr-1"></i>Membru</span>`;
+            } else {
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-slate-800 text-slate-400 border border-slate-700">Vizitator</span>`;
+            }
+        }
+
         // AUTH HEADER RENDER
         function renderAuthStatus() {
             const container = document.getElementById('authContainer');
@@ -483,7 +496,7 @@
                         <div class="text-left">
                             <div class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                                 ${currentUser.name}
-                                <span class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${currentUser.rank === 'Boss' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : currentUser.rank === 'Supervizor' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : currentUser.rank === 'Membru' ? 'bg-slate-800 text-slate-300' : 'bg-slate-800/50 text-slate-500'}">${currentUser.rank}</span>
+                                ${getRankBadgeHTML(currentUser.rank)}
                             </div>
                             <div class="text-[10px] text-slate-400">${currentUser.discordTag}</div>
                         </div>
@@ -670,7 +683,7 @@
                 return `
                     <tr class="hover:bg-slate-800/30">
                         <td class="p-3 font-semibold text-slate-200">${p.name}</td>
-                        <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">${p.rank}</span></td>
+                        <td class="p-3">${getRankBadgeHTML(p.rank)}</td>
                         <td class="p-3 text-xs text-slate-400">${new Date(p.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</td>
                         <td class="p-3 font-mono text-xs text-amber-400">${formatSeconds(currentPauseSec)}</td>
                         <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(workedSec)}</td>
@@ -690,7 +703,7 @@
                 <tr class="hover:bg-slate-800/30">
                     <td class="p-3 font-medium text-slate-200">${e.name}</td>
                     <td class="p-3 font-mono text-xs text-amber-400">${e.discordId}</td>
-                    <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold">${e.rank}</span></td>
+                    <td class="p-3">${getRankBadgeHTML(e.rank)}</td>
                     <td class="p-3 text-xs text-slate-400">${e.dateAdded}</td>
                     <td class="p-3 text-right">
                         ${isBoss() ? `<button onclick="removeEmployee(${e.id})" class="text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 transition"><i class="fa-solid fa-user-minus"></i> Elimină</button>` : `<span class="text-xs text-slate-600">-</span>`}
@@ -715,7 +728,7 @@
                     <tr class="hover:bg-slate-800/30">
                         <td class="p-3 font-medium text-slate-200">${e.name}</td>
                         <td class="p-3 font-mono text-xs text-slate-400">${e.discordId}</td>
-                        <td class="p-3"><span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">${e.rank}</span></td>
+                        <td class="p-3">${getRankBadgeHTML(e.rank)}</td>
                         <td class="p-3 text-xs text-slate-300 font-semibold">${shiftCount} ture</td>
                         <td class="p-3 font-mono font-bold text-sm text-indigo-400">${formatSeconds(totalSec)}</td>
                     </tr>
@@ -727,7 +740,7 @@
             const table = document.getElementById('historyTable');
 
             if (historyLogs.length === 0) {
-                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 italic">Nu există pontaje înregistrate.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500 italic">Nu există pontaje înregistrate.</td></tr>`;
                 return;
             }
 
@@ -736,6 +749,7 @@
                 return `
                     <tr class="hover:bg-slate-800/30 ${isCancelled ? 'opacity-60 bg-rose-950/10' : ''}">
                         <td class="p-3 font-medium text-slate-200">${log.name}</td>
+                        <td class="p-3">${getRankBadgeHTML(log.rank)}</td>
                         <td class="p-3 text-xs text-slate-400">${log.date}</td>
                         <td class="p-3 text-xs text-slate-300">${log.startTime} - ${log.endTime}</td>
                         <td class="p-3 font-mono text-xs font-semibold text-indigo-400">${log.duration}</td>
