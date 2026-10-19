@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ro" class="h-full bg-slate-950 text-slate-100">
+<html lang="ro" class="h-full bg-[#0d0a08] text-amber-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Montevaro SRL - Management & Pontaj FPlayT</title>
+    <title>Montevaro SRL 🇲🇽 - Management & Pontaj FPlayT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script>
@@ -11,29 +11,39 @@
             theme: {
                 extend: {
                     colors: {
-                        discord: { DEFAULT: '#5865F2', hover: '#4752C4' }
+                        discord: { DEFAULT: '#5865F2', hover: '#4752C4' },
+                        mexico: {
+                            red: '#dc2626',
+                            green: '#059669',
+                            gold: '#f59e0b',
+                            dark: '#16110e',
+                            card: '#1f1814',
+                            border: '#382b23'
+                        }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+<body class="h-full flex flex-col font-sans antialiased selection:bg-amber-600 selection:text-white">
 
-    <!-- Top Navigation Header -->
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Top Navigation Header (Mexican Style) -->
+    <header class="bg-[#140f0c]/90 backdrop-blur border-b border-amber-900/40 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-xl">
-                    <i class="fa-solid fa-building"></i>
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600 to-red-600 border border-amber-400/30 flex items-center justify-center text-amber-100 font-bold text-2xl shadow-lg shadow-amber-950/50">
+                    🇲🇽
                 </div>
                 <div>
-                    <h1 class="font-bold text-slate-100 tracking-wide text-lg">Montevaro SRL</h1>
-                    <p class="text-xs text-slate-400">Sistem Management & Pontaj FPlayT</p>
+                    <h1 class="font-black text-amber-400 tracking-wider text-xl uppercase flex items-center gap-2">
+                        Montevaro SRL <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-700/50">FPlayT</span>
+                    </h1>
+                    <p class="text-xs text-amber-200/60 font-medium">Familia Montevaro - Sistem Management & Pontaj</p>
                 </div>
             </div>
 
-            <!-- Profile / Auth Header (Shows Discord Rank) -->
+            <!-- Profile / Auth Header -->
             <div id="authContainer" class="flex items-center gap-3">
                 <!-- Dynamic Content via JS -->
             </div>
@@ -44,24 +54,24 @@
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
 
         <!-- Navigation Tabs -->
-        <div class="flex border-b border-slate-800 gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <button onclick="switchTab('pontaj')" id="tab-pontaj" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition bg-indigo-600 text-white">
+        <div class="flex border-b border-amber-900/40 gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <button onclick="switchTab('pontaj')" id="tab-pontaj" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md">
                 <i class="fa-solid fa-stopwatch"></i> Pontaj Live
             </button>
-            <button onclick="switchTab('saptamanal')" id="tab-saptamanal" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+            <button onclick="switchTab('saptamanal')" id="tab-saptamanal" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
                 <i class="fa-solid fa-calendar-week"></i> Pontaj Săptămânal
             </button>
-            <button onclick="switchTab('angajati')" id="tab-angajati" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                <i class="fa-solid fa-users"></i> Tabel Angajați
+            <button onclick="switchTab('angajati')" id="tab-angajati" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
+                <i class="fa-solid fa-users"></i> Registru Membri
             </button>
-            <button onclick="switchTab('istoric')" id="tab-istoric" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
+            <button onclick="switchTab('istoric')" id="tab-istoric" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
                 <i class="fa-solid fa-clock-rotate-left"></i> Istoric Pontaje
             </button>
-            <button onclick="switchTab('radio')" id="tab-radio" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                <i class="fa-solid fa-walkie-talkie"></i> Stări & Coduri Radio
+            <button onclick="switchTab('radio')" id="tab-radio" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
+                <i class="fa-solid fa-walkie-talkie"></i> Coduri Radio
             </button>
-            <button onclick="switchTab('ghid')" id="tab-ghid" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900">
-                <i class="fa-solid fa-book"></i> Ghid & Regulament
+            <button onclick="switchTab('ghid')" id="tab-ghid" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
+                <i class="fa-solid fa-book"></i> Regulament
             </button>
         </div>
 
@@ -69,66 +79,68 @@
         <section id="section-pontaj" class="tab-content flex flex-col gap-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Status Control Box -->
-                <div class="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between gap-6 shadow-lg">
+                <div class="lg:col-span-1 bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 flex flex-col justify-between gap-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 text-amber-500/5 text-9xl pointer-events-none select-none">🌵</div>
+                    
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-xs uppercase font-semibold text-slate-400 tracking-wider">Stare Curentă</span>
-                            <span id="dutyBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                            <span class="text-xs uppercase font-bold text-amber-400 tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-pepper-hot text-red-500"></i> Stare Curentă</span>
+                            <span id="dutyBadge" class="px-3 py-1 rounded-full text-xs font-black bg-amber-950 text-amber-400 border border-amber-800/60">
                                 OFF DUTY
                             </span>
                         </div>
                         
-                        <div class="text-center py-6 bg-slate-950/60 rounded-xl border border-slate-800/80 mb-4">
-                            <div id="dutyTimer" class="text-4xl font-mono font-bold tracking-tight text-slate-300">00:00:00</div>
-                            <div class="text-xs text-slate-500 mt-1" id="startTimeLabel">Neînceput</div>
+                        <div class="text-center py-6 bg-[#0f0b08] rounded-xl border border-amber-900/30 mb-4 shadow-inner">
+                            <div id="dutyTimer" class="text-4xl font-mono font-black tracking-tight text-amber-200">00:00:00</div>
+                            <div class="text-xs text-amber-400/60 mt-1" id="startTimeLabel">Neînceput</div>
                         </div>
 
                         <!-- Pause Info Box (Visible when On Duty) -->
-                        <div id="pauseControlBox" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div id="pauseControlBox" class="hidden bg-[#0f0b08] border border-amber-900/30 rounded-xl p-4 space-y-3">
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400 font-semibold">Timp Pauză Disponibil:</span>
+                                <span class="text-amber-200/70 font-semibold">Timp Pauză Disponibil:</span>
                                 <span id="pauseAllowanceLabel" class="font-mono font-bold text-amber-400">05:00 min</span>
                             </div>
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400 font-semibold">Pauză Folosită:</span>
-                                <span id="pauseUsedLabel" class="font-mono font-bold text-slate-300">00:00 min</span>
+                                <span class="text-amber-200/70 font-semibold">Pauză Folosită:</span>
+                                <span id="pauseUsedLabel" class="font-mono font-bold text-amber-100">00:00 min</span>
                             </div>
-                            <button id="pauseToggleBtn" onclick="togglePause()" class="w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30">
+                            <button id="pauseToggleBtn" onclick="togglePause()" class="w-full py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30">
                                 <i class="fa-solid fa-mug-hot"></i> Ia o Pauză (5m / Oră)
                             </button>
                         </div>
 
-                        <div id="dutyEligibilityNotice" class="text-xs text-amber-400/90 bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg mt-3 hidden">
-                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Nu ai drept de pontaj. Trebuie să fii adăugat în Tabelul Angajaților cu Discord ID de către un Boss.
+                        <div id="dutyEligibilityNotice" class="text-xs text-amber-400/90 bg-amber-950/60 border border-amber-800/50 p-3 rounded-lg mt-3 hidden">
+                            <i class="fa-solid fa-triangle-exclamation mr-1 text-amber-400"></i> Nu ai drept de pontaj. Trebuie să fii adăugat în Registru cu Discord ID de către un Boss Montevaro.
                         </div>
                     </div>
                     <div>
-                        <button id="toggleDutyBtn" onclick="toggleDuty()" class="w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50 disabled:cursor-not-allowed">
+                        <button id="toggleDutyBtn" onclick="toggleDuty()" class="w-full py-4 px-4 rounded-xl font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50 disabled:cursor-not-allowed">
                             <i class="fa-solid fa-play"></i> Intră On Duty
                         </button>
                     </div>
                 </div>
 
                 <!-- Active On-Duty People Table -->
-                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col">
+                <div class="lg:col-span-2 bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl flex flex-col">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-base font-bold text-slate-200 flex items-center gap-2">
-                            <i class="fa-solid fa-signal text-emerald-400"></i> Colegi Activi On Duty
+                        <h2 class="text-base font-bold text-amber-200 flex items-center gap-2">
+                            <i class="fa-solid fa-signal text-emerald-500"></i> Membri Activi On Duty
                         </h2>
-                        <span id="activeCount" class="text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2.5 py-1 rounded-md font-semibold">0 Activi</span>
+                        <span id="activeCount" class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-md font-bold">0 Activi</span>
                     </div>
                     <div class="overflow-x-auto flex-1">
-                        <table class="w-full text-left text-sm text-slate-300">
-                            <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                        <table class="w-full text-left text-sm text-amber-100/90">
+                            <thead class="text-xs uppercase bg-[#0f0b08] text-amber-400/70 border-b border-amber-900/40">
                                 <tr>
-                                    <th class="p-3">Angajat</th>
+                                    <th class="p-3">Membru Montevaro</th>
                                     <th class="p-3">Grad Discord</th>
                                     <th class="p-3">Ora Start</th>
                                     <th class="p-3">Pauză Folosită</th>
                                     <th class="p-3">Timp Lucrat</th>
                                 </tr>
                             </thead>
-                            <tbody id="activeDutyTable" class="divide-y divide-slate-800/50">
+                            <tbody id="activeDutyTable" class="divide-y divide-amber-900/20">
                                 <!-- Populated dynamically -->
                             </tbody>
                         </table>
@@ -139,31 +151,31 @@
 
         <!-- Section: PONTAJ SAPTAMANAL -->
         <section id="section-saptamanal" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-100"><i class="fa-solid fa-chart-pie text-indigo-400 mr-2"></i>Raport Ore Săptămânale</h2>
-                        <p class="text-xs text-slate-400">Totalul orelor efectuate de angajați în săptămâna în curs.</p>
+                        <h2 class="text-lg font-bold text-amber-200"><i class="fa-solid fa-chart-pie text-amber-400 mr-2"></i>Raport Ore Săptămânale - Montevaro</h2>
+                        <p class="text-xs text-amber-200/60">Totalul orelor efectuate de membri în săptămâna în curs.</p>
                     </div>
                     <div id="resetWeeklyContainer" class="hidden">
-                        <button onclick="resetWeeklyHours()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition">
+                        <button onclick="resetWeeklyHours()" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition">
                             <i class="fa-solid fa-rotate-right"></i> Resetează Săptămâna
                         </button>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                    <table class="w-full text-left text-sm text-amber-100/90">
+                        <thead class="text-xs uppercase bg-[#0f0b08] text-amber-400/70 border-b border-amber-900/40">
                             <tr>
-                                <th class="p-3">Angajat</th>
+                                <th class="p-3">Membru</th>
                                 <th class="p-3">Discord ID</th>
                                 <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Ture Finalizate</th>
-                                <th class="p-3 font-bold text-indigo-400">Total Ore Săptămână</th>
+                                <th class="p-3 font-bold text-amber-400">Total Ore Săptămână</th>
                             </tr>
                         </thead>
-                        <tbody id="weeklyTable" class="divide-y divide-slate-800/50">
+                        <tbody id="weeklyTable" class="divide-y divide-amber-900/20">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
@@ -173,31 +185,31 @@
 
         <!-- Section: TABEL ANGAJATI -->
         <section id="section-angajati" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-100">Registru Angajați Oficiali</h2>
-                        <p class="text-xs text-slate-400">Adăugarea se face obligatoriu pe baza Discord ID-ului numeric.</p>
+                        <h2 class="text-lg font-bold text-amber-200">Registru Oficial Membri Montevaro</h2>
+                        <p class="text-xs text-amber-200/60">Adăugarea se face obligatoriu pe baza Discord ID-ului numeric.</p>
                     </div>
                     <div id="addEmployeeContainer" class="hidden">
-                        <button onclick="openAddEmployeeModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md">
-                            <i class="fa-solid fa-user-plus"></i> Adaugă Angajat cu Discord ID
+                        <button onclick="openAddEmployeeModal()" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-user-plus"></i> Adaugă Membru cu Discord ID
                         </button>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                    <table class="w-full text-left text-sm text-amber-100/90">
+                        <thead class="text-xs uppercase bg-[#0f0b08] text-amber-400/70 border-b border-amber-900/40">
                             <tr>
-                                <th class="p-3">Nume / Angajat</th>
+                                <th class="p-3">Nume / Membru</th>
                                 <th class="p-3">Discord ID (Obligatoriu)</th>
                                 <th class="p-3">Grad Discord</th>
-                                <th class="p-3">Data Angajării</th>
+                                <th class="p-3">Data Înregistrării</th>
                                 <th class="p-3 text-right">Acțiuni</th>
                             </tr>
                         </thead>
-                        <tbody id="employeesTable" class="divide-y divide-slate-800/50">
+                        <tbody id="employeesTable" class="divide-y divide-amber-900/20">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
@@ -207,19 +219,19 @@
 
         <!-- Section: ISTORIC PONTAJE -->
         <section id="section-istoric" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-100">Istoric & Rapoarte Individuale</h2>
-                        <p class="text-xs text-slate-400">Toate turele finalizate. Supervizorii/Boss pot anula pontaje eronate cu motiv.</p>
+                        <h2 class="text-lg font-bold text-amber-200">Istoric & Rapoarte Pontaje</h2>
+                        <p class="text-xs text-amber-200/60">Toate turele finalizate. Supervizorii/Boss pot anula pontaje eronate cu motiv.</p>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-300">
-                        <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                    <table class="w-full text-left text-sm text-amber-100/90">
+                        <thead class="text-xs uppercase bg-[#0f0b08] text-amber-400/70 border-b border-amber-900/40">
                             <tr>
-                                <th class="p-3">Angajat</th>
+                                <th class="p-3">Membru</th>
                                 <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Data</th>
                                 <th class="p-3">Interval</th>
@@ -228,7 +240,7 @@
                                 <th class="p-3 text-right">Acțiuni</th>
                             </tr>
                         </thead>
-                        <tbody id="historyTable" class="divide-y divide-slate-800/50">
+                        <tbody id="historyTable" class="divide-y divide-amber-900/20">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
@@ -238,14 +250,14 @@
 
         <!-- Section: STARI RADIO -->
         <section id="section-radio" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
                 <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-100"><i class="fa-solid fa-radio text-indigo-400 mr-2"></i>Coduri & Stări Radio FPlayT</h2>
-                        <p class="text-xs text-slate-400">Click pe un cod pentru a-l copia rapid în clipboard.</p>
+                        <h2 class="text-lg font-bold text-amber-200"><i class="fa-solid fa-radio text-amber-400 mr-2"></i>Coduri & Stări Radio FPlayT</h2>
+                        <p class="text-xs text-amber-200/60">Click pe un cod pentru a-l copia rapid în clipboard.</p>
                     </div>
                     <div class="w-full sm:w-64">
-                        <input type="text" id="radioSearch" onkeyup="filterRadioCodes()" placeholder="Caută cod radio..." class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <input type="text" id="radioSearch" onkeyup="filterRadioCodes()" placeholder="Caută cod radio..." class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
                     </div>
                 </div>
 
@@ -257,44 +269,44 @@
 
         <!-- Section: GHID -->
         <section id="section-ghid" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-6">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl space-y-6">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-book-open text-indigo-400"></i> Regulament Intern Montevaro SRL
+                    <h2 class="text-xl font-bold text-amber-200 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-amber-400"></i> Regulament Intern Montevaro SRL 🇲🇽
                     </h2>
-                    <p class="text-sm text-slate-400 mt-1">Proceduri de operare, pontaj și pauze.</p>
+                    <p class="text-sm text-amber-200/60 mt-1">Proceduri de operare, pontaj și conduită.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                        <h3 class="font-semibold text-indigo-400 flex items-center gap-2">
-                            <i class="fa-solid fa-check-circle"></i> Reguli Pontaj
+                    <div class="p-4 bg-[#0f0b08] border border-amber-900/30 rounded-xl space-y-2">
+                        <h3 class="font-bold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-emerald-500"></i> Reguli Pontaj
                         </h3>
-                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
-                            <li>Doar utilizatorii adăugați de un Boss cu Discord ID pot porni pontajul.</li>
+                        <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
+                            <li>Doar membrii adăugați de un Boss cu Discord ID pot porni pontajul.</li>
                             <li>Neanunțarea pe radio la intrare/ieșire atrage sancțiuni.</li>
                             <li>Anularea intenționat eronată a pontajelor se pedepsește direct.</li>
                         </ul>
                     </div>
 
-                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                        <h3 class="font-semibold text-amber-400 flex items-center gap-2">
-                            <i class="fa-solid fa-mug-hot"></i> Regula Pauzei (5 min/h)
+                    <div class="p-4 bg-[#0f0b08] border border-amber-900/30 rounded-xl space-y-2">
+                        <h3 class="font-bold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-mug-hot text-amber-500"></i> Regula Pauzei (5 min/h)
                         </h3>
-                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
+                        <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
                             <li>Ai dreptul la maxim 5 minute pauză acumulată pentru fiecare oră de pontaj.</li>
                             <li>Pauza se pornește și se oprește direct din panoul de control.</li>
                             <li>Depășirea timpului de pauză aduce anularea turei curente.</li>
                         </ul>
                     </div>
 
-                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                        <h3 class="font-semibold text-emerald-400 flex items-center gap-2">
-                            <i class="fa-solid fa-walkie-talkie"></i> Protocol Radio
+                    <div class="p-4 bg-[#0f0b08] border border-amber-900/30 rounded-xl space-y-2">
+                        <h3 class="font-bold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-walkie-talkie text-red-500"></i> Protocol Radio
                         </h3>
-                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside leading-relaxed">
+                        <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
                             <li>Utilizați codurile radio standard (10-8, 10-7, 10-6).</li>
-                            <li>Comunicați scurt și la obiect pe frecvența companiei.</li>
+                            <li>Comunicați scurt și la obiect pe frecvența familiei.</li>
                         </ul>
                     </div>
                 </div>
@@ -304,25 +316,25 @@
     </main>
 
     <!-- Modal: Adaugare Angajat prin Discord ID -->
-    <div id="addEmployeeModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-slate-100">Adaugă Angajat (Discord ID Mandatory)</h3>
-                <button onclick="closeAddEmployeeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div id="addEmployeeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-[#16110e] border border-amber-900/60 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-amber-900/40 pb-3">
+                <h3 class="font-bold text-amber-200">Adaugă Membru (Discord ID Mandatory)</h3>
+                <button onclick="closeAddEmployeeModal()" class="text-amber-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nume Angajat / Joc *</label>
-                    <input type="text" id="newEmpName" placeholder="ex: Ion Popescu" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-bold text-amber-400/80 mb-1">Nume Membru / Joc *</label>
+                    <input type="text" id="newEmpName" placeholder="ex: Mateo Montevaro" class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-amber-400 mb-1">Discord ID Numeric (Obligatoriu) *</label>
-                    <input type="text" id="newEmpDiscordId" placeholder="ex: 394857201948572910" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
-                    <p class="text-[10px] text-slate-500 mt-1">Apasă click dreapta pe utilizatorul de Discord -> Copy User ID.</p>
+                    <label class="block text-xs font-bold text-amber-400 mb-1">Discord ID Numeric (Obligatoriu) *</label>
+                    <input type="text" id="newEmpDiscordId" placeholder="ex: 1416544089041670266" class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500 font-mono">
+                    <p class="text-[10px] text-amber-200/50 mt-1">Apasă click dreapta pe utilizatorul de Discord -> Copy User ID.</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Grad Afacere / Discord</label>
-                    <select id="newEmpRank" class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-bold text-amber-400/80 mb-1">Grad Afacere / Discord</label>
+                    <select id="newEmpRank" class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
                         <option value="Membru">Membru / Angajat</option>
                         <option value="Supervizor">Supervizor / Co-Lider</option>
                         <option value="Boss">Boss / Lider</option>
@@ -330,27 +342,27 @@
                 </div>
             </div>
             <div class="flex justify-end gap-3 pt-2">
-                <button onclick="closeAddEmployeeModal()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Anulează</button>
-                <button onclick="saveNewEmployee()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500">Adaugă Angajat</button>
+                <button onclick="closeAddEmployeeModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f0b08] text-amber-200 hover:bg-amber-950">Anulează</button>
+                <button onclick="saveNewEmployee()" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 text-white hover:bg-amber-500">Adaugă Membru</button>
             </div>
         </div>
     </div>
 
     <!-- Modal: Anulare Pontaj cu Motiv -->
-    <div id="cancelPontajModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Anulare Pontaj</h3>
-                <button onclick="closeCancelModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div id="cancelPontajModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-[#16110e] border border-amber-900/60 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-amber-900/40 pb-3">
+                <h3 class="font-bold text-red-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Anulare Pontaj</h3>
+                <button onclick="closeCancelModal()" class="text-amber-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p class="text-xs text-slate-300">Este obligatoriu să specificați motivul mai jos pentru audit.</p>
+            <p class="text-xs text-amber-200/80">Este obligatoriu să specificați motivul mai jos pentru audit.</p>
             <div>
-                <label class="block text-xs font-semibold text-slate-400 mb-1">Motiv Anulare *</label>
-                <textarea id="cancelReasonInput" rows="3" placeholder="Motivul anulării (ex: AFK prelungit fără pauză)..." class="w-full bg-slate-950 border border-slate-800 text-sm rounded-lg p-3 text-slate-200 focus:outline-none focus:border-rose-500"></textarea>
+                <label class="block text-xs font-bold text-amber-400 mb-1">Motiv Anulare *</label>
+                <textarea id="cancelReasonInput" rows="3" placeholder="Motivul anulării (ex: AFK prelungit fără pauză)..." class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl p-3 text-amber-100 focus:outline-none focus:border-red-500"></textarea>
             </div>
             <div class="flex justify-end gap-3 pt-2">
-                <button onclick="closeCancelModal()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Renunță</button>
-                <button onclick="confirmCancelPontaj()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-500">Confirmă Anularea</button>
+                <button onclick="closeCancelModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0f0b08] text-amber-200 hover:bg-amber-950">Renunță</button>
+                <button onclick="confirmCancelPontaj()" class="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white hover:bg-red-500">Confirmă Anularea</button>
             </div>
         </div>
     </div>
@@ -361,10 +373,19 @@
         const GUILD_ID = "1416528931762340023";
         const REDIRECT_URI = "https://crocghim2.github.io/montevaro-srl/";
 
+        // LISTA DE ROLES CU DREPT DE PONTAJ
+        const ALLOWED_DUTY_ROLES = [
+            "1416544089041670266",
+            "1416742507521249431",
+            "1416539258973589685",
+            "1416539113087041567",
+            "1416538825814966362",
+            "1416530432190582846"
+        ];
+
         const DISCORD_ROLES = {
             BOSS: ["1416544089041670266", "1416539258973589685"],
-            SUPERVISOR: ["1416544089041670266", "1416539258973589685", "1416539113087041567"],
-            MEMBER: ["1416539879323599011", "1416539746414493877"]
+            SUPERVISOR: ["1416544089041670266", "1416539258973589685", "1416539113087041567"]
         };
 
         const RADIO_CODES = [
@@ -377,7 +398,6 @@
             { code: "10-99", title: "Urgență Majoră", desc: "Situație critică, intervenție imediată necesară." }
         ];
 
-        // STATE MANAGED VIA LOCALSTORAGE
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         let employees = JSON.parse(localStorage.getItem('employees')) || [];
         let historyLogs = JSON.parse(localStorage.getItem('historyLogs')) || [];
@@ -418,14 +438,17 @@
                     const guildData = await guildRes.json();
 
                     let computedRank = 'Vizitator';
+                    let hasDutyPermission = false;
 
                     if (guildData && guildData.roles) {
                         const userRoles = guildData.roles;
+                        hasDutyPermission = userRoles.some(r => ALLOWED_DUTY_ROLES.includes(r));
+
                         if (userRoles.some(r => DISCORD_ROLES.BOSS.includes(r))) {
                             computedRank = 'Boss';
                         } else if (userRoles.some(r => DISCORD_ROLES.SUPERVISOR.includes(r))) {
                             computedRank = 'Supervizor';
-                        } else if (userRoles.some(r => DISCORD_ROLES.MEMBER.includes(r))) {
+                        } else if (hasDutyPermission) {
                             computedRank = 'Membru';
                         }
                     }
@@ -435,7 +458,8 @@
                         name: guildData?.nick || userData.global_name || userData.username,
                         discordTag: `@${userData.username}`,
                         avatar: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : null,
-                        rank: computedRank
+                        rank: computedRank,
+                        hasDutyRole: hasDutyPermission
                     };
 
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -454,7 +478,6 @@
             checkAndRenderAll();
         }
 
-        // PERMISSION HELPERS
         function isBoss() { return currentUser && currentUser.rank === 'Boss'; }
         function isSupervisor() { return currentUser && (currentUser.rank === 'Boss' || currentUser.rank === 'Supervizor'); }
         
@@ -464,43 +487,44 @@
         }
 
         function canUserDuty() {
-            if (!currentUser || currentUser.rank === 'Vizitator') return false;
+            if (!currentUser) return false;
+            if (currentUser.rank === 'Boss') return true; // Boss mereu permisiune
+            if (!currentUser.hasDutyRole && currentUser.rank === 'Vizitator') return false;
             return getMatchingEmployee() !== undefined && getMatchingEmployee() !== null;
         }
 
         function getRankBadgeHTML(rank) {
             if (rank === 'Boss') {
-                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20"><i class="fa-solid fa-crown text-[9px] mr-1"></i>Boss</span>`;
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-black uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30"><i class="fa-solid fa-crown text-[9px] mr-1"></i>Boss</span>`;
             } else if (rank === 'Supervizor') {
-                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20"><i class="fa-solid fa-user-shield text-[9px] mr-1"></i>Supervizor</span>`;
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fa-solid fa-user-shield text-[9px] mr-1"></i>Supervizor</span>`;
             } else if (rank === 'Membru') {
-                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><i class="fa-solid fa-user text-[9px] mr-1"></i>Membru</span>`;
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"><i class="fa-solid fa-user text-[9px] mr-1"></i>Membru</span>`;
             } else {
-                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-slate-800 text-slate-400 border border-slate-700">Vizitator</span>`;
+                return `<span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-amber-950/60 text-amber-200/50 border border-amber-900/40">Vizitator</span>`;
             }
         }
 
-        // AUTH HEADER RENDER
         function renderAuthStatus() {
             const container = document.getElementById('authContainer');
             if (!currentUser) {
                 container.innerHTML = `
-                    <button onclick="loginWithDiscord()" class="bg-discord hover:bg-discord-hover text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg transition">
+                    <button onclick="loginWithDiscord()" class="bg-discord hover:bg-discord-hover text-white px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg transition">
                         <i class="fa-brands fa-discord text-base"></i> Conectare cu Discord
                     </button>
                 `;
             } else {
                 container.innerHTML = `
-                    <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 py-1.5 px-3 rounded-xl">
-                        ${currentUser.avatar ? `<img src="${currentUser.avatar}" class="w-8 h-8 rounded-full border border-slate-700">` : `<div class="w-8 h-8 rounded-full bg-indigo-600/30 text-indigo-400 font-bold flex items-center justify-center text-xs">${currentUser.name.charAt(0)}</div>`}
+                    <div class="flex items-center gap-3 bg-[#16110e] border border-amber-900/40 py-1.5 px-3 rounded-xl shadow-md">
+                        ${currentUser.avatar ? `<img src="${currentUser.avatar}" class="w-8 h-8 rounded-full border border-amber-600/40">` : `<div class="w-8 h-8 rounded-full bg-amber-600/30 text-amber-400 font-bold flex items-center justify-center text-xs">${currentUser.name.charAt(0)}</div>`}
                         <div class="text-left">
-                            <div class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                            <div class="text-xs font-bold text-amber-100 flex items-center gap-1.5">
                                 ${currentUser.name}
                                 ${getRankBadgeHTML(currentUser.rank)}
                             </div>
-                            <div class="text-[10px] text-slate-400">${currentUser.discordTag}</div>
+                            <div class="text-[10px] text-amber-200/60">${currentUser.discordTag}</div>
                         </div>
-                        <button onclick="logout()" title="Deconectare" class="text-slate-500 hover:text-rose-400 ml-1 text-sm"><i class="fa-solid fa-right-from-bracket"></i></button>
+                        <button onclick="logout()" title="Deconectare" class="text-amber-200/40 hover:text-red-400 ml-1 text-sm"><i class="fa-solid fa-right-from-bracket"></i></button>
                     </div>
                 `;
             }
@@ -521,7 +545,7 @@
                 pauseBox.classList.add('hidden');
             } else if (!canUserDuty()) {
                 toggleBtn.disabled = true;
-                toggleBtn.innerHTML = '<i class="fa-solid fa-ban"></i> Fără Acces Pontaj (Vizitator / Fără ID)';
+                toggleBtn.innerHTML = '<i class="fa-solid fa-ban"></i> Fără Acces Pontaj';
                 notice.classList.remove('hidden');
                 pauseBox.classList.add('hidden');
             } else {
@@ -529,12 +553,12 @@
                 const isUserOnDuty = activePontajs.some(p => String(p.discordId) === String(currentUser.id));
                 if (isUserOnDuty) {
                     toggleBtn.disabled = false;
-                    toggleBtn.className = "w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-lg bg-rose-600 hover:bg-rose-500 text-white";
+                    toggleBtn.className = "w-full py-4 px-4 rounded-xl font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-red-600 hover:bg-red-500 text-white";
                     toggleBtn.innerHTML = '<i class="fa-solid fa-stop"></i> Oprește Pontajul (Off Duty)';
                     pauseBox.classList.remove('hidden');
                 } else {
                     toggleBtn.disabled = false;
-                    toggleBtn.className = "w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white";
+                    toggleBtn.className = "w-full py-4 px-4 rounded-xl font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-emerald-600 hover:bg-emerald-500 text-white";
                     toggleBtn.innerHTML = '<i class="fa-solid fa-play"></i> Intră On Duty';
                     pauseBox.classList.add('hidden');
                 }
@@ -546,7 +570,6 @@
             renderWeeklyTable();
         }
 
-        // PONTAJ ACTIONS
         function toggleDuty() {
             if (!currentUser || !canUserDuty()) return;
 
@@ -599,13 +622,11 @@
             if (!pontaj) return;
 
             if (pontaj.isPaused) {
-                // UNPAUSE
                 const pauseDuration = Math.floor((new Date() - new Date(pontaj.pauseStart)) / 1000);
                 pontaj.pauseUsedSec = (pontaj.pauseUsedSec || 0) + pauseDuration;
                 pontaj.isPaused = false;
                 pontaj.pauseStart = null;
             } else {
-                // PAUSE
                 pontaj.isPaused = true;
                 pontaj.pauseStart = new Date().toISOString();
             }
@@ -614,7 +635,6 @@
             checkAndRenderAll();
         }
 
-        // REAL-TIME TIMER UPDATE
         function updateTimerUI() {
             if (!currentUser) return;
 
@@ -634,7 +654,7 @@
                 }
 
                 const workedSec = Math.max(0, totalSec - currentPauseSec);
-                const allowedPauseSec = Math.floor(workedSec / 3600) * 300 + 300; // 5 min per hour
+                const allowedPauseSec = Math.floor(workedSec / 3600) * 300 + 300;
 
                 timerEl.textContent = formatSeconds(workedSec);
                 startLabel.textContent = `Inceput la: ${new Date(pontaj.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}`;
@@ -644,32 +664,31 @@
 
                 if (pontaj.isPaused) {
                     badgeEl.textContent = "IN PAUZA";
-                    badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20";
-                    pauseBtn.className = "w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30";
+                    badgeEl.className = "px-3 py-1 rounded-full text-xs font-black bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    pauseBtn.className = "w-full py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/30";
                     pauseBtn.innerHTML = '<i class="fa-solid fa-play"></i> Reia Pontajul (Ieși din Pauză)';
                 } else {
                     badgeEl.textContent = "ON DUTY";
-                    badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-                    pauseBtn.className = "w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30";
+                    badgeEl.className = "px-3 py-1 rounded-full text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                    pauseBtn.className = "w-full py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600/20 text-amber-300 border border-amber-500/30 hover:bg-amber-600/30";
                     pauseBtn.innerHTML = '<i class="fa-solid fa-mug-hot"></i> Ia o Pauză (5m / Oră)';
                 }
             } else {
                 timerEl.textContent = "00:00:00";
                 badgeEl.textContent = "OFF DUTY";
-                badgeEl.className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700";
+                badgeEl.className = "px-3 py-1 rounded-full text-xs font-black bg-amber-950 text-amber-400/60 border border-amber-900/60";
                 startLabel.textContent = "Neînceput";
             }
 
             renderActiveDutyTable();
         }
 
-        // TABLES RENDERING
         function renderActiveDutyTable() {
             const table = document.getElementById('activeDutyTable');
             document.getElementById('activeCount').textContent = `${activePontajs.length} Activi`;
 
             if (activePontajs.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Niciun angajat On Duty.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru On Duty.</td></tr>`;
                 return;
             }
 
@@ -681,10 +700,10 @@
                 const workedSec = Math.max(0, totalSec - currentPauseSec);
 
                 return `
-                    <tr class="hover:bg-slate-800/30">
-                        <td class="p-3 font-semibold text-slate-200">${p.name}</td>
+                    <tr class="hover:bg-amber-950/20">
+                        <td class="p-3 font-semibold text-amber-100">${p.name}</td>
                         <td class="p-3">${getRankBadgeHTML(p.rank)}</td>
-                        <td class="p-3 text-xs text-slate-400">${new Date(p.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</td>
+                        <td class="p-3 text-xs text-amber-200/60">${new Date(p.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</td>
                         <td class="p-3 font-mono text-xs text-amber-400">${formatSeconds(currentPauseSec)}</td>
                         <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(workedSec)}</td>
                     </tr>
@@ -695,18 +714,18 @@
         function renderEmployeesTable() {
             const table = document.getElementById('employeesTable');
             if (employees.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Niciun angajat adăugat cu Discord ID în registru.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru adăugat cu Discord ID în registru.</td></tr>`;
                 return;
             }
 
             table.innerHTML = employees.map(e => `
-                <tr class="hover:bg-slate-800/30">
-                    <td class="p-3 font-medium text-slate-200">${e.name}</td>
+                <tr class="hover:bg-amber-950/20">
+                    <td class="p-3 font-medium text-amber-100">${e.name}</td>
                     <td class="p-3 font-mono text-xs text-amber-400">${e.discordId}</td>
                     <td class="p-3">${getRankBadgeHTML(e.rank)}</td>
-                    <td class="p-3 text-xs text-slate-400">${e.dateAdded}</td>
+                    <td class="p-3 text-xs text-amber-200/60">${e.dateAdded}</td>
                     <td class="p-3 text-right">
-                        ${isBoss() ? `<button onclick="removeEmployee(${e.id})" class="text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 transition"><i class="fa-solid fa-user-minus"></i> Elimină</button>` : `<span class="text-xs text-slate-600">-</span>`}
+                        ${isBoss() ? `<button onclick="removeEmployee(${e.id})" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 px-2.5 py-1 rounded border border-red-500/20 transition"><i class="fa-solid fa-user-minus"></i> Elimină</button>` : `<span class="text-xs text-amber-200/30">-</span>`}
                     </td>
                 </tr>
             `).join('');
@@ -715,7 +734,7 @@
         function renderWeeklyTable() {
             const table = document.getElementById('weeklyTable');
             if (employees.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Niciun angajat înregistrat.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru înregistrat.</td></tr>`;
                 return;
             }
 
@@ -725,12 +744,12 @@
                 const shiftCount = userLogs.length;
 
                 return `
-                    <tr class="hover:bg-slate-800/30">
-                        <td class="p-3 font-medium text-slate-200">${e.name}</td>
-                        <td class="p-3 font-mono text-xs text-slate-400">${e.discordId}</td>
+                    <tr class="hover:bg-amber-950/20">
+                        <td class="p-3 font-medium text-amber-100">${e.name}</td>
+                        <td class="p-3 font-mono text-xs text-amber-200/60">${e.discordId}</td>
                         <td class="p-3">${getRankBadgeHTML(e.rank)}</td>
-                        <td class="p-3 text-xs text-slate-300 font-semibold">${shiftCount} ture</td>
-                        <td class="p-3 font-mono font-bold text-sm text-indigo-400">${formatSeconds(totalSec)}</td>
+                        <td class="p-3 text-xs text-amber-200/80 font-semibold">${shiftCount} ture</td>
+                        <td class="p-3 font-mono font-bold text-sm text-amber-400">${formatSeconds(totalSec)}</td>
                     </tr>
                 `;
             }).join('');
@@ -740,28 +759,28 @@
             const table = document.getElementById('historyTable');
 
             if (historyLogs.length === 0) {
-                table.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500 italic">Nu există pontaje înregistrate.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-amber-200/40 italic">Nu există pontaje înregistrate.</td></tr>`;
                 return;
             }
 
             table.innerHTML = historyLogs.map(log => {
                 const isCancelled = log.status === 'Anulat';
                 return `
-                    <tr class="hover:bg-slate-800/30 ${isCancelled ? 'opacity-60 bg-rose-950/10' : ''}">
-                        <td class="p-3 font-medium text-slate-200">${log.name}</td>
+                    <tr class="hover:bg-amber-950/20 ${isCancelled ? 'opacity-50 bg-red-950/10' : ''}">
+                        <td class="p-3 font-medium text-amber-100">${log.name}</td>
                         <td class="p-3">${getRankBadgeHTML(log.rank)}</td>
-                        <td class="p-3 text-xs text-slate-400">${log.date}</td>
-                        <td class="p-3 text-xs text-slate-300">${log.startTime} - ${log.endTime}</td>
-                        <td class="p-3 font-mono text-xs font-semibold text-indigo-400">${log.duration}</td>
+                        <td class="p-3 text-xs text-amber-200/60">${log.date}</td>
+                        <td class="p-3 text-xs text-amber-200/80">${log.startTime} - ${log.endTime}</td>
+                        <td class="p-3 font-mono text-xs font-semibold text-amber-400">${log.duration}</td>
                         <td class="p-3">
                             ${isCancelled 
-                                ? `<span class="text-xs px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold" title="Motiv: ${log.cancelReason}">Anulat (${log.cancelReason})</span>`
-                                : `<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Validat</span>`
+                                ? `<span class="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 font-bold" title="Motiv: ${log.cancelReason}">Anulat (${log.cancelReason})</span>`
+                                : `<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">Validat</span>`
                             }
                         </td>
                         <td class="p-3 text-right">
                             ${(!isCancelled && isSupervisor()) 
-                                ? `<button onclick="openCancelModal(${log.id})" class="text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 transition"><i class="fa-solid fa-ban"></i> Anulează</button>` 
+                                ? `<button onclick="openCancelModal(${log.id})" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded border border-red-500/20 transition"><i class="fa-solid fa-ban"></i> Anulează</button>` 
                                 : `-`
                             }
                         </td>
@@ -770,7 +789,6 @@
             }).join('');
         }
 
-        // EMPLOYEE MANAGEMENT
         function openAddEmployeeModal() { document.getElementById('addEmployeeModal').classList.remove('hidden'); }
         function closeAddEmployeeModal() { document.getElementById('addEmployeeModal').classList.add('hidden'); }
 
@@ -779,13 +797,13 @@
             const discordId = document.getElementById('newEmpDiscordId').value.trim();
             const rank = document.getElementById('newEmpRank').value;
 
-            if (!name) return alert("Introduceți numele angajatului!");
+            if (!name) return alert("Introduceți numele membrului!");
             if (!discordId || isNaN(discordId) || discordId.length < 15) {
-                return alert("Introduceți un Discord ID numeric valid (ex: 394857201948572910)!");
+                return alert("Introduceți un Discord ID numeric valid (ex: 1416544089041670266)!");
             }
 
             if (employees.some(e => String(e.discordId).trim() === discordId)) {
-                return alert("Acest Discord ID există deja în registrul angajaților!");
+                return alert("Acest Discord ID există deja în registrul membrilor!");
             }
 
             employees.push({
@@ -804,7 +822,7 @@
         }
 
         function removeEmployee(id) {
-            if (confirm("Sigur dorești să elimini acest angajat? El nu va mai putea porni pontajul.")) {
+            if (confirm("Sigur dorești să elimini acest membru? Nu va mai putea porni pontajul.")) {
                 employees = employees.filter(e => e.id !== id);
                 saveEmployees();
                 checkAndRenderAll();
@@ -821,7 +839,6 @@
             }
         }
 
-        // CANCELLATION MODAL
         function openCancelModal(id) {
             currentCancelTargetId = id;
             document.getElementById('cancelReasonInput').value = '';
@@ -849,7 +866,6 @@
             closeCancelModal();
         }
 
-        // RADIO CODES RENDER & COPY
         function renderRadioCodes(filter = '') {
             const grid = document.getElementById('radioCodesGrid');
             const filtered = RADIO_CODES.filter(c => 
@@ -859,13 +875,13 @@
             );
 
             grid.innerHTML = filtered.map(c => `
-                <div onclick="copyToClipboard('${c.code}')" class="p-4 bg-slate-950 border border-slate-800 hover:border-indigo-500/50 rounded-xl cursor-pointer transition group">
+                <div onclick="copyToClipboard('${c.code}')" class="p-4 bg-[#0f0b08] border border-amber-900/30 hover:border-amber-500/50 rounded-xl cursor-pointer transition group">
                     <div class="flex items-center justify-between mb-1">
-                        <span class="font-mono font-bold text-indigo-400 group-hover:text-indigo-300 text-lg">${c.code}</span>
-                        <i class="fa-regular fa-copy text-slate-600 group-hover:text-slate-300 text-xs"></i>
+                        <span class="font-mono font-bold text-amber-400 group-hover:text-amber-300 text-lg">${c.code}</span>
+                        <i class="fa-regular fa-copy text-amber-200/40 group-hover:text-amber-200 text-xs"></i>
                     </div>
-                    <div class="font-semibold text-slate-200 text-sm mb-1">${c.title}</div>
-                    <div class="text-xs text-slate-400">${c.desc}</div>
+                    <div class="font-bold text-amber-100 text-sm mb-1">${c.title}</div>
+                    <div class="text-xs text-amber-200/60">${c.desc}</div>
                 </div>
             `).join('');
         }
@@ -879,18 +895,16 @@
             alert(`Codul radio "${text}" a fost copiat în clipboard!`);
         }
 
-        // TAB NAVIGATION
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition text-slate-400 hover:text-slate-200 hover:bg-slate-900";
+                btn.className = "tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]";
             });
             document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
 
-            document.getElementById(`tab-${tabName}`).className = "tab-btn px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition bg-indigo-600 text-white";
+            document.getElementById(`tab-${tabName}`).className = "tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md";
             document.getElementById(`section-${tabName}`).classList.remove('hidden');
         }
 
-        // UTILS
         function formatSeconds(totalSec) {
             const hrs = Math.floor(totalSec / 3600);
             const mins = Math.floor((totalSec % 3600) / 60);
