@@ -137,7 +137,7 @@
                                     <th class="p-3">Grad Discord</th>
                                     <th class="p-3">Ora Start</th>
                                     <th class="p-3">Pauză Folosită</th>
-                                    <th class="p-3">Timp Lucrat</th>
+                                    <th class="p-3">Timp Lucrat Total</th>
                                 </tr>
                             </thead>
                             <tbody id="activeDutyTable" class="divide-y divide-amber-900/20">
@@ -159,7 +159,7 @@
                     </div>
                     <div id="resetWeeklyContainer" class="hidden">
                         <button onclick="resetWeeklyHours()" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-right"></i> Resetează Săptămâna
+                            <i class="fa-solid fa-rotate-right"></i> Resetează Toți Membrii
                         </button>
                     </div>
                 </div>
@@ -173,6 +173,7 @@
                                 <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Ture Finalizate</th>
                                 <th class="p-3 font-bold text-amber-400">Total Ore Săptămână</th>
+                                <th class="p-3 text-right">Setări Pontaj</th>
                             </tr>
                         </thead>
                         <tbody id="weeklyTable" class="divide-y divide-amber-900/20">
@@ -295,7 +296,7 @@
                         </h3>
                         <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
                             <li>Ai dreptul la maxim 5 minute pauză acumulată pentru fiecare oră de pontaj.</li>
-                            <li>Pauza se pornește și se oprește direct din panoul de control.</li>
+                            <li>Pauza este inclusă în timpul total de pontaj.</li>
                             <li>Depășirea timpului de pauză aduce anularea turei curente.</li>
                         </ul>
                     </div>
@@ -619,8 +620,8 @@
                 const endTime = new Date();
                 const startTime = new Date(pontaj.startTime);
                 
-                const totalElapsedSec = Math.floor((endTime - startTime) / 1000);
-                const workedSec = Math.max(0, totalElapsedSec - (pontaj.pauseUsedSec || 0));
+                // TIMPUL INCLUDE SI PAUZA (Timpul total de când a pornit pontajul)
+                const workedSec = Math.max(0, Math.floor((endTime - startTime) / 1000));
 
                 window.historyLogs.unshift({
                     id: Date.now(),
@@ -685,17 +686,18 @@
 
             if (pontaj) {
                 const now = new Date();
-                const totalSec = Math.floor((now - new Date(pontaj.startTime)) / 1000);
+                
+                // TIMPUL SE CONTORIZEAZA COMPLET (INCLUSIV PAUZA)
+                const totalWorkedSec = Math.floor((now - new Date(pontaj.startTime)) / 1000);
                 
                 let currentPauseSec = pontaj.pauseUsedSec || 0;
                 if (pontaj.isPaused) {
                     currentPauseSec += Math.floor((now - new Date(pontaj.pauseStart)) / 1000);
                 }
 
-                const workedSec = Math.max(0, totalSec - currentPauseSec);
-                const allowedPauseSec = Math.floor(workedSec / 3600) * 300 + 300;
+                const allowedPauseSec = Math.floor(totalWorkedSec / 3600) * 300 + 300;
 
-                timerEl.textContent = formatSeconds(workedSec);
+                timerEl.textContent = formatSeconds(totalWorkedSec);
                 startLabel.textContent = `Inceput la: ${new Date(pontaj.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}`;
 
                 document.getElementById('pauseAllowanceLabel').textContent = `${formatSeconds(allowedPauseSec).slice(3)} min`;
@@ -733,10 +735,11 @@
 
             const now = new Date();
             table.innerHTML = window.activePontajs.map(p => {
-                const totalSec = Math.floor((now - new Date(p.startTime)) / 1000);
+                // Timpul total include pauza
+                const totalWorkedSec = Math.floor((now - new Date(p.startTime)) / 1000);
+                
                 let currentPauseSec = p.pauseUsedSec || 0;
                 if (p.isPaused) currentPauseSec += Math.floor((now - new Date(p.pauseStart)) / 1000);
-                const workedSec = Math.max(0, totalSec - currentPauseSec);
 
                 return `
                     <tr class="hover:bg-amber-950/20">
@@ -744,7 +747,7 @@
                         <td class="p-3">${getRankBadgeHTML(p.rank)}</td>
                         <td class="p-3 text-xs text-amber-200/60">${new Date(p.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</td>
                         <td class="p-3 font-mono text-xs text-amber-400">${formatSeconds(currentPauseSec)}</td>
-                        <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(workedSec)}</td>
+                        <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(totalWorkedSec)}</td>
                     </tr>
                 `;
             }).join('');
@@ -773,7 +776,7 @@
         function renderWeeklyTable() {
             const table = document.getElementById('weeklyTable');
             if (window.employees.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru înregistrat.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/40 italic">Niciun membru înregistrat.</td></tr>`;
                 return;
             }
 
@@ -789,9 +792,101 @@
                         <td class="p-3">${getRankBadgeHTML(e.rank)}</td>
                         <td class="p-3 text-xs text-amber-200/80 font-semibold">${shiftCount} ture</td>
                         <td class="p-3 font-mono font-bold text-sm text-amber-400">${formatSeconds(totalSec)}</td>
+                        <td class="p-3 text-right">
+                            ${isBoss() ? `
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button onclick="addMemberPontaj('${e.discordId}')" title="Pune Pontaj (Min)" class="px-2 py-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/30 rounded text-xs font-bold transition">
+                                        <i class="fa-solid fa-plus mr-1"></i> Pune
+                                    </button>
+                                    <button onclick="removeMemberPontaj('${e.discordId}')" title="Scoate Pontaj (Min)" class="px-2 py-1 bg-amber-600/20 text-amber-400 hover:bg-amber-600/30 border border-amber-500/30 rounded text-xs font-bold transition">
+                                        <i class="fa-solid fa-minus mr-1"></i> Scoate
+                                    </button>
+                                    <button onclick="resetMemberPontaj('${e.discordId}')" title="Resetează Pontaj" class="px-2 py-1 bg-red-600/20 text-red-400 hover:bg-red-600/30 border border-red-500/30 rounded text-xs font-bold transition">
+                                        <i class="fa-solid fa-rotate-right mr-1"></i> Reset
+                                    </button>
+                                </div>
+                            ` : `<span class="text-xs text-amber-200/30">-</span>`}
+                        </td>
                     </tr>
                 `;
             }).join('');
+        }
+
+        // FUNCTII SETARI PONTAJ INDIVIDUAL PENTRU MEMBRI
+        function resetMemberPontaj(discordId) {
+            if (!isBoss()) return;
+            const emp = window.employees.find(e => String(e.discordId) === String(discordId));
+            const name = emp ? emp.name : discordId;
+
+            if (confirm(`Sigur dorești să resetezi orele doar pentru ${name}?`)) {
+                window.historyLogs = window.historyLogs.filter(h => String(h.discordId) !== String(discordId));
+                if(window.syncHistoryToCloud) window.syncHistoryToCloud();
+                checkAndRenderAll();
+            }
+        }
+
+        function addMemberPontaj(discordId) {
+            if (!isBoss()) return;
+            const emp = window.employees.find(e => String(e.discordId) === String(discordId));
+            const name = emp ? emp.name : discordId;
+
+            const inputMinutes = prompt(`Câte MINUTE dorești să ADAUGI la pontajul lui ${name}?`);
+            if (inputMinutes === null) return;
+            
+            const minutes = parseInt(inputMinutes, 10);
+            if (isNaN(minutes) || minutes <= 0) {
+                return alert("Te rugăm să introduci un număr valid de minute!");
+            }
+
+            const addedSec = minutes * 60;
+            window.historyLogs.unshift({
+                id: Date.now(),
+                discordId: discordId,
+                name: name,
+                rank: emp ? emp.rank : 'Membru',
+                date: new Date().toISOString().split('T')[0],
+                startTime: 'Ajustare',
+                endTime: 'Manuală',
+                workedSec: addedSec,
+                duration: formatSeconds(addedSec),
+                status: 'Valabil',
+                cancelReason: null
+            });
+
+            if(window.syncHistoryToCloud) window.syncHistoryToCloud();
+            checkAndRenderAll();
+        }
+
+        function removeMemberPontaj(discordId) {
+            if (!isBoss()) return;
+            const emp = window.employees.find(e => String(e.discordId) === String(discordId));
+            const name = emp ? emp.name : discordId;
+
+            const inputMinutes = prompt(`Câte MINUTE dorești să SCOȚI din pontajul lui ${name}?`);
+            if (inputMinutes === null) return;
+
+            const minutes = parseInt(inputMinutes, 10);
+            if (isNaN(minutes) || minutes <= 0) {
+                return alert("Te rugăm să introduci un număr valid de minute!");
+            }
+
+            const deductedSec = -(minutes * 60);
+            window.historyLogs.unshift({
+                id: Date.now(),
+                discordId: discordId,
+                name: name,
+                rank: emp ? emp.rank : 'Membru',
+                date: new Date().toISOString().split('T')[0],
+                startTime: 'Scădere',
+                endTime: 'Manuală',
+                workedSec: deductedSec,
+                duration: `-${formatSeconds(Math.abs(deductedSec))}`,
+                status: 'Valabil',
+                cancelReason: null
+            });
+
+            if(window.syncHistoryToCloud) window.syncHistoryToCloud();
+            checkAndRenderAll();
         }
 
         function renderHistoryTable() {
@@ -870,7 +965,7 @@
 
         function resetWeeklyHours() {
             if (!isBoss()) return;
-            if (confirm("Ești sigur că dorești să resetezi toate orele săptămânale? Această acțiune este ireversibilă.")) {
+            if (confirm("Ești sigur că dorești să resetezi toate orele săptămânale pentru TOȚI membrii? Această acțiune este ireversibilă.")) {
                 window.historyLogs = [];
                 if(window.syncHistoryToCloud) window.syncHistoryToCloud();
                 checkAndRenderAll();
@@ -945,10 +1040,12 @@
         }
 
         function formatSeconds(totalSec) {
-            const hrs = Math.floor(totalSec / 3600);
-            const mins = Math.floor((totalSec % 3600) / 60);
-            const secs = totalSec % 60;
-            return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            const sign = totalSec < 0 ? "-" : "";
+            const absSec = Math.abs(totalSec);
+            const hrs = Math.floor(absSec / 3600);
+            const mins = Math.floor((absSec % 3600) / 60);
+            const secs = absSec % 60;
+            return `${sign}${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
     </script>
 </body>
