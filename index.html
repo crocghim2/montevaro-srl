@@ -67,9 +67,6 @@
             <button onclick="switchTab('istoric')" id="tab-istoric" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
                 <i class="fa-solid fa-clock-rotate-left"></i> Istoric Pontaje
             </button>
-            <button onclick="switchTab('radio')" id="tab-radio" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
-                <i class="fa-solid fa-walkie-talkie"></i> Coduri Radio
-            </button>
             <button onclick="switchTab('ghid')" id="tab-ghid" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition text-amber-200/70 hover:text-amber-100 hover:bg-[#1a130f]">
                 <i class="fa-solid fa-book"></i> Regulament
             </button>
@@ -138,6 +135,7 @@
                                     <th class="p-3">Ora Start</th>
                                     <th class="p-3">Pauză Folosită</th>
                                     <th class="p-3">Timp Lucrat Total</th>
+                                    <th class="p-3 text-right">Acțiune</th>
                                 </tr>
                             </thead>
                             <tbody id="activeDutyTable" class="divide-y divide-amber-900/20">
@@ -259,25 +257,6 @@
             </div>
         </section>
 
-        <!-- Section: STARI RADIO -->
-        <section id="section-radio" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
-                <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-lg font-bold text-amber-200"><i class="fa-solid fa-radio text-amber-400 mr-2"></i>Coduri & Stări Radio FPlayT</h2>
-                        <p class="text-xs text-amber-200/60">Click pe un cod pentru a-l copia rapid în clipboard.</p>
-                    </div>
-                    <div class="w-full sm:w-64">
-                        <input type="text" id="radioSearch" onkeyup="filterRadioCodes()" placeholder="Caută cod radio..." class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="radioCodesGrid">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-        </section>
-
         <!-- Section: GHID -->
         <section id="section-ghid" class="tab-content hidden flex flex-col gap-6">
             <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl space-y-6">
@@ -288,14 +267,14 @@
                     <p class="text-sm text-amber-200/60 mt-1">Proceduri de operare, pontaj și conduită.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-4 bg-[#0f0b08] border border-amber-900/30 rounded-xl space-y-2">
                         <h3 class="font-bold text-amber-400 flex items-center gap-2">
                             <i class="fa-solid fa-check-circle text-emerald-500"></i> Reguli Pontaj
                         </h3>
                         <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
                             <li>Doar membrii adăugați de un Boss cu Discord ID pot porni pontajul.</li>
-                            <li>Neanunțarea pe radio la intrare/ieșire atrage sancțiuni.</li>
+                            <li>Supervizorii și Boss pot opri pontajul altor membri dacă este cazul.</li>
                             <li>Anularea intenționat eronată a pontajelor se pedepsește direct.</li>
                         </ul>
                     </div>
@@ -308,16 +287,6 @@
                             <li>Ai dreptul la maxim 5 minute pauză acumulată pentru fiecare oră de pontaj.</li>
                             <li>Pauza este inclusă în timpul total de pontaj.</li>
                             <li>Depășirea timpului de pauză aduce anularea turei curente.</li>
-                        </ul>
-                    </div>
-
-                    <div class="p-4 bg-[#0f0b08] border border-amber-900/30 rounded-xl space-y-2">
-                        <h3 class="font-bold text-amber-400 flex items-center gap-2">
-                            <i class="fa-solid fa-walkie-talkie text-red-500"></i> Protocol Radio
-                        </h3>
-                        <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
-                            <li>Utilizați codurile radio standard (10-8, 10-7, 10-6).</li>
-                            <li>Comunicați scurt și la obiect pe frecvența familiei.</li>
                         </ul>
                     </div>
                 </div>
@@ -439,16 +408,6 @@
             SUPERVISOR: ["1416544089041670266", "1416539258973589685", "1416539113087041567"]
         };
 
-        const RADIO_CODES = [
-            { code: "10-4", title: "Am Înțeles / Recepționat", desc: "Aconfirmare recepționare mesaj radio." },
-            { code: "10-6", title: "Ocupat", desc: "Ocupat cu o activitate temporară, disponibil doar pentru urgențe." },
-            { code: "10-7", title: "Off Duty / Inactiv", desc: "Ieșire din tură / Pauză oficială." },
-            { code: "10-8", title: "On Duty / Activ", desc: "Intrare în tură, disponibil pentru activități." },
-            { code: "10-9", title: "Repetă Mesajul", desc: "Solicitare de a repeta ultima transmisiune radio." },
-            { code: "10-20", title: "Locație Curentă", desc: "Solicitare sau transmitere a poziției pe hartă." },
-            { code: "10-99", title: "Urgență Majoră", desc: "Situație critică, intervenție imediată necesară." }
-        ];
-
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         window.employees = [];
         window.historyLogs = [];
@@ -459,7 +418,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             handleDiscordCallback();
             renderAuthStatus();
-            renderRadioCodes();
             checkAndRenderAll();
 
             setInterval(updateTimerUI, 1000);
@@ -626,27 +584,7 @@
             const existingIndex = window.activePontajs.findIndex(p => String(p.discordId) === String(currentUser.id));
 
             if (existingIndex !== -1) {
-                const pontaj = window.activePontajs[existingIndex];
-                const endTime = new Date();
-                const startTime = new Date(pontaj.startTime);
-                
-                const workedSec = Math.max(0, Math.floor((endTime - startTime) / 1000));
-
-                window.historyLogs.unshift({
-                    id: Date.now(),
-                    discordId: currentUser.id,
-                    name: currentUser.name,
-                    rank: currentUser.rank,
-                    date: startTime.toISOString().split('T')[0],
-                    startTime: startTime.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }),
-                    endTime: endTime.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }),
-                    workedSec: workedSec,
-                    duration: formatSeconds(workedSec),
-                    status: 'Valabil',
-                    cancelReason: null
-                });
-
-                window.activePontajs.splice(existingIndex, 1);
+                stopPontajForUser(currentUser.id);
             } else {
                 window.activePontajs.push({
                     id: Date.now(),
@@ -658,11 +596,51 @@
                     pauseStart: null,
                     pauseUsedSec: 0
                 });
+
+                if(window.syncPontajsToCloud) window.syncPontajsToCloud();
+                checkAndRenderAll();
             }
+        }
+
+        // FUNCTIE PENTRU OPRIREA PONTAJULUI (PROPRIU SAU AL ALTUI MEMBRU DE CATRE BOSS/SUPERVIZOR)
+        function stopPontajForUser(discordId) {
+            const index = window.activePontajs.findIndex(p => String(p.discordId) === String(discordId));
+            if (index === -1) return;
+
+            const pontaj = window.activePontajs[index];
+            const endTime = new Date();
+            const startTime = new Date(pontaj.startTime);
+            const workedSec = Math.max(0, Math.floor((endTime - startTime) / 1000));
+
+            window.historyLogs.unshift({
+                id: Date.now(),
+                discordId: pontaj.discordId,
+                name: pontaj.name,
+                rank: pontaj.rank,
+                date: startTime.toISOString().split('T')[0],
+                startTime: startTime.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }),
+                endTime: endTime.toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }),
+                workedSec: workedSec,
+                duration: formatSeconds(workedSec),
+                status: 'Valabil',
+                cancelReason: null
+            });
+
+            window.activePontajs.splice(index, 1);
 
             if(window.syncPontajsToCloud) window.syncPontajsToCloud();
             if(window.syncHistoryToCloud) window.syncHistoryToCloud();
             checkAndRenderAll();
+        }
+
+        function forceStopPontaj(discordId) {
+            if (!isSupervisor()) return;
+            const pontaj = window.activePontajs.find(p => String(p.discordId) === String(discordId));
+            if (!pontaj) return;
+
+            if (confirm(`Ești sigur că dorești să oprești tura lui ${pontaj.name}?`)) {
+                stopPontajForUser(discordId);
+            }
         }
 
         function togglePause() {
@@ -736,7 +714,7 @@
             document.getElementById('activeCount').textContent = `${window.activePontajs.length} Activi`;
 
             if (window.activePontajs.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru On Duty.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/40 italic">Niciun membru On Duty.</td></tr>`;
                 return;
             }
 
@@ -746,6 +724,8 @@
                 let currentPauseSec = p.pauseUsedSec || 0;
                 if (p.isPaused) currentPauseSec += Math.floor((now - new Date(p.pauseStart)) / 1000);
 
+                const isSelf = currentUser && String(p.discordId) === String(currentUser.id);
+
                 return `
                     <tr class="hover:bg-amber-950/20">
                         <td class="p-3 font-semibold text-amber-100">${p.name}</td>
@@ -753,6 +733,13 @@
                         <td class="p-3 text-xs text-amber-200/60">${new Date(p.startTime).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</td>
                         <td class="p-3 font-mono text-xs text-amber-400">${formatSeconds(currentPauseSec)}</td>
                         <td class="p-3 font-mono font-bold text-xs text-emerald-400">${formatSeconds(totalWorkedSec)}</td>
+                        <td class="p-3 text-right">
+                            ${(isSupervisor() && !isSelf) ? `
+                                <button onclick="forceStopPontaj('${p.discordId}')" class="px-2 py-1 bg-red-600/20 text-red-400 hover:bg-red-600/30 border border-red-500/30 rounded text-xs font-bold transition">
+                                    <i class="fa-solid fa-stop mr-1"></i> Oprește Tura
+                                </button>
+                            ` : `<span class="text-xs text-amber-200/30">-</span>`}
+                        </td>
                     </tr>
                 `;
             }).join('');
@@ -1016,35 +1003,6 @@
             }
 
             closeCancelModal();
-        }
-
-        function renderRadioCodes(filter = '') {
-            const grid = document.getElementById('radioCodesGrid');
-            const filtered = RADIO_CODES.filter(c => 
-                c.code.toLowerCase().includes(filter.toLowerCase()) || 
-                c.title.toLowerCase().includes(filter.toLowerCase()) ||
-                c.desc.toLowerCase().includes(filter.toLowerCase())
-            );
-
-            grid.innerHTML = filtered.map(c => `
-                <div onclick="copyToClipboard('${c.code}')" class="p-4 bg-[#0f0b08] border border-amber-900/30 hover:border-amber-500/50 rounded-xl cursor-pointer transition group">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-mono font-bold text-amber-400 group-hover:text-amber-300 text-lg">${c.code}</span>
-                        <i class="fa-regular fa-copy text-amber-200/40 group-hover:text-amber-200 text-xs"></i>
-                    </div>
-                    <div class="font-bold text-amber-100 text-sm mb-1">${c.title}</div>
-                    <div class="text-xs text-amber-200/60">${c.desc}</div>
-                </div>
-            `).join('');
-        }
-
-        function filterRadioCodes() {
-            renderRadioCodes(document.getElementById('radioSearch').value);
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            alert(`Codul radio "${text}" a fost copiat în clipboard!`);
         }
 
         function switchTab(tabName) {
