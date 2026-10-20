@@ -39,7 +39,7 @@
                     <h1 class="font-black text-amber-400 tracking-wider text-xl uppercase flex items-center gap-2">
                         Montevaro SRL <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-700/50">FPlayT</span>
                     </h1>
-                    <p class="text-xs text-amber-200/60 font-medium">Familia Montevaro - Sistem Management & Pontaj</p>
+                    <p class="text-xs text-amber-200/60 font-medium">Familia Montevaro - Sistem Management & Pontaj Live Cloud</p>
                 </div>
             </div>
 
@@ -367,13 +367,53 @@
         </div>
     </div>
 
-    <!-- Application Script Logic -->
+    <!-- Firebase Realtime Cloud Core Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxlY4WmM9deaW8YkVFXt5VdqR6OBFVb4w",
+            authDomain: "montevaro-60868.firebaseapp.com",
+            databaseURL: "https://montevaro-60868-default-rtdb.firebaseio.com",
+            projectId: "montevaro-60868",
+            storageBucket: "montevaro-60868.firebasestorage.app",
+            messagingSenderId: "10318017100",
+            appId: "1:10318017100:web:d3ec389095b066ea8efae9",
+            measurementId: "G-WNNJD4JFD3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Realtime sync listeners
+        onValue(ref(db, 'employees'), (snapshot) => {
+            window.employees = snapshot.val() || [];
+            if(window.checkAndRenderAll) window.checkAndRenderAll();
+        });
+
+        onValue(ref(db, 'activePontajs'), (snapshot) => {
+            window.activePontajs = snapshot.val() || [];
+            if(window.checkAndRenderAll) window.checkAndRenderAll();
+        });
+
+        onValue(ref(db, 'historyLogs'), (snapshot) => {
+            window.historyLogs = snapshot.val() || [];
+            if(window.checkAndRenderAll) window.checkAndRenderAll();
+        });
+
+        // Global functions to save back to Firebase Cloud
+        window.syncEmployeesToCloud = function() { set(ref(db, 'employees'), window.employees); };
+        window.syncPontajsToCloud = function() { set(ref(db, 'activePontajs'), window.activePontajs); };
+        window.syncHistoryToCloud = function() { set(ref(db, 'historyLogs'), window.historyLogs); };
+    </script>
+
+    <!-- UI Logic Script -->
     <script>
         const DISCORD_CLIENT_ID = "1561848481642057869";
         const GUILD_ID = "1416528931762340023";
         const REDIRECT_URI = "https://crocghim2.github.io/montevaro-srl/";
 
-        // LISTA DE ROLES CU DREPT DE PONTAJ
         const ALLOWED_DUTY_ROLES = [
             "1416544089041670266",
             "1416742507521249431",
@@ -399,9 +439,9 @@
         ];
 
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-        let employees = JSON.parse(localStorage.getItem('employees')) || [];
-        let historyLogs = JSON.parse(localStorage.getItem('historyLogs')) || [];
-        let activePontajs = JSON.parse(localStorage.getItem('activePontajs')) || [];
+        window.employees = [];
+        window.historyLogs = [];
+        window.activePontajs = [];
 
         let currentCancelTargetId = null;
 
@@ -414,7 +454,6 @@
             setInterval(updateTimerUI, 1000);
         });
 
-        // DISCORD OAUTH2 AUTHENTICATION
         function loginWithDiscord() {
             const oauth2Url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20guilds.members.read`;
             window.location.href = oauth2Url;
@@ -483,12 +522,12 @@
         
         function getMatchingEmployee() {
             if (!currentUser || !currentUser.id) return null;
-            return employees.find(e => String(e.discordId).trim() === String(currentUser.id).trim());
+            return window.employees.find(e => String(e.discordId).trim() === String(currentUser.id).trim());
         }
 
         function canUserDuty() {
             if (!currentUser) return false;
-            if (currentUser.rank === 'Boss') return true; // Boss mereu permisiune
+            if (currentUser.rank === 'Boss') return true;
             if (!currentUser.hasDutyRole && currentUser.rank === 'Vizitator') return false;
             return getMatchingEmployee() !== undefined && getMatchingEmployee() !== null;
         }
@@ -530,7 +569,7 @@
             }
         }
 
-        function checkAndRenderAll() {
+        window.checkAndRenderAll = function() {
             document.getElementById('addEmployeeContainer').className = isBoss() ? 'block' : 'hidden';
             document.getElementById('resetWeeklyContainer').className = isBoss() ? 'block' : 'hidden';
 
@@ -550,7 +589,7 @@
                 pauseBox.classList.add('hidden');
             } else {
                 notice.classList.add('hidden');
-                const isUserOnDuty = activePontajs.some(p => String(p.discordId) === String(currentUser.id));
+                const isUserOnDuty = window.activePontajs.some(p => String(p.discordId) === String(currentUser.id));
                 if (isUserOnDuty) {
                     toggleBtn.disabled = false;
                     toggleBtn.className = "w-full py-4 px-4 rounded-xl font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg bg-red-600 hover:bg-red-500 text-white";
@@ -568,22 +607,22 @@
             renderActiveDutyTable();
             renderHistoryTable();
             renderWeeklyTable();
-        }
+        };
 
         function toggleDuty() {
             if (!currentUser || !canUserDuty()) return;
 
-            const existingIndex = activePontajs.findIndex(p => String(p.discordId) === String(currentUser.id));
+            const existingIndex = window.activePontajs.findIndex(p => String(p.discordId) === String(currentUser.id));
 
             if (existingIndex !== -1) {
-                const pontaj = activePontajs[existingIndex];
+                const pontaj = window.activePontajs[existingIndex];
                 const endTime = new Date();
                 const startTime = new Date(pontaj.startTime);
                 
                 const totalElapsedSec = Math.floor((endTime - startTime) / 1000);
                 const workedSec = Math.max(0, totalElapsedSec - (pontaj.pauseUsedSec || 0));
 
-                historyLogs.unshift({
+                window.historyLogs.unshift({
                     id: Date.now(),
                     discordId: currentUser.id,
                     name: currentUser.name,
@@ -597,9 +636,9 @@
                     cancelReason: null
                 });
 
-                activePontajs.splice(existingIndex, 1);
+                window.activePontajs.splice(existingIndex, 1);
             } else {
-                activePontajs.push({
+                window.activePontajs.push({
                     id: Date.now(),
                     discordId: currentUser.id,
                     name: currentUser.name,
@@ -611,14 +650,14 @@
                 });
             }
 
-            savePontajs();
-            saveHistory();
+            if(window.syncPontajsToCloud) window.syncPontajsToCloud();
+            if(window.syncHistoryToCloud) window.syncHistoryToCloud();
             checkAndRenderAll();
         }
 
         function togglePause() {
             if (!currentUser) return;
-            const pontaj = activePontajs.find(p => String(p.discordId) === String(currentUser.id));
+            const pontaj = window.activePontajs.find(p => String(p.discordId) === String(currentUser.id));
             if (!pontaj) return;
 
             if (pontaj.isPaused) {
@@ -631,14 +670,14 @@
                 pontaj.pauseStart = new Date().toISOString();
             }
 
-            savePontajs();
+            if(window.syncPontajsToCloud) window.syncPontajsToCloud();
             checkAndRenderAll();
         }
 
         function updateTimerUI() {
             if (!currentUser) return;
 
-            const pontaj = activePontajs.find(p => String(p.discordId) === String(currentUser.id));
+            const pontaj = window.activePontajs.find(p => String(p.discordId) === String(currentUser.id));
             const timerEl = document.getElementById('dutyTimer');
             const badgeEl = document.getElementById('dutyBadge');
             const startLabel = document.getElementById('startTimeLabel');
@@ -685,15 +724,15 @@
 
         function renderActiveDutyTable() {
             const table = document.getElementById('activeDutyTable');
-            document.getElementById('activeCount').textContent = `${activePontajs.length} Activi`;
+            document.getElementById('activeCount').textContent = `${window.activePontajs.length} Activi`;
 
-            if (activePontajs.length === 0) {
+            if (window.activePontajs.length === 0) {
                 table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru On Duty.</td></tr>`;
                 return;
             }
 
             const now = new Date();
-            table.innerHTML = activePontajs.map(p => {
+            table.innerHTML = window.activePontajs.map(p => {
                 const totalSec = Math.floor((now - new Date(p.startTime)) / 1000);
                 let currentPauseSec = p.pauseUsedSec || 0;
                 if (p.isPaused) currentPauseSec += Math.floor((now - new Date(p.pauseStart)) / 1000);
@@ -713,12 +752,12 @@
 
         function renderEmployeesTable() {
             const table = document.getElementById('employeesTable');
-            if (employees.length === 0) {
+            if (window.employees.length === 0) {
                 table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru adăugat cu Discord ID în registru.</td></tr>`;
                 return;
             }
 
-            table.innerHTML = employees.map(e => `
+            table.innerHTML = window.employees.map(e => `
                 <tr class="hover:bg-amber-950/20">
                     <td class="p-3 font-medium text-amber-100">${e.name}</td>
                     <td class="p-3 font-mono text-xs text-amber-400">${e.discordId}</td>
@@ -733,13 +772,13 @@
 
         function renderWeeklyTable() {
             const table = document.getElementById('weeklyTable');
-            if (employees.length === 0) {
+            if (window.employees.length === 0) {
                 table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru înregistrat.</td></tr>`;
                 return;
             }
 
-            table.innerHTML = employees.map(e => {
-                const userLogs = historyLogs.filter(h => String(h.discordId) === String(e.discordId) && h.status === 'Valabil');
+            table.innerHTML = window.employees.map(e => {
+                const userLogs = window.historyLogs.filter(h => String(h.discordId) === String(e.discordId) && h.status === 'Valabil');
                 const totalSec = userLogs.reduce((acc, log) => acc + (log.workedSec || 0), 0);
                 const shiftCount = userLogs.length;
 
@@ -758,12 +797,12 @@
         function renderHistoryTable() {
             const table = document.getElementById('historyTable');
 
-            if (historyLogs.length === 0) {
+            if (window.historyLogs.length === 0) {
                 table.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-amber-200/40 italic">Nu există pontaje înregistrate.</td></tr>`;
                 return;
             }
 
-            table.innerHTML = historyLogs.map(log => {
+            table.innerHTML = window.historyLogs.map(log => {
                 const isCancelled = log.status === 'Anulat';
                 return `
                     <tr class="hover:bg-amber-950/20 ${isCancelled ? 'opacity-50 bg-red-950/10' : ''}">
@@ -802,11 +841,11 @@
                 return alert("Introduceți un Discord ID numeric valid (ex: 1416544089041670266)!");
             }
 
-            if (employees.some(e => String(e.discordId).trim() === discordId)) {
+            if (window.employees.some(e => String(e.discordId).trim() === discordId)) {
                 return alert("Acest Discord ID există deja în registrul membrilor!");
             }
 
-            employees.push({
+            window.employees.push({
                 id: Date.now(),
                 name: name,
                 discordId: discordId,
@@ -814,7 +853,7 @@
                 dateAdded: new Date().toISOString().split('T')[0]
             });
 
-            saveEmployees();
+            if(window.syncEmployeesToCloud) window.syncEmployeesToCloud();
             closeAddEmployeeModal();
             document.getElementById('newEmpName').value = '';
             document.getElementById('newEmpDiscordId').value = '';
@@ -823,8 +862,8 @@
 
         function removeEmployee(id) {
             if (confirm("Sigur dorești să elimini acest membru? Nu va mai putea porni pontajul.")) {
-                employees = employees.filter(e => e.id !== id);
-                saveEmployees();
+                window.employees = window.employees.filter(e => e.id !== id);
+                if(window.syncEmployeesToCloud) window.syncEmployeesToCloud();
                 checkAndRenderAll();
             }
         }
@@ -832,8 +871,8 @@
         function resetWeeklyHours() {
             if (!isBoss()) return;
             if (confirm("Ești sigur că dorești să resetezi toate orele săptămânale? Această acțiune este ireversibilă.")) {
-                historyLogs = [];
-                saveHistory();
+                window.historyLogs = [];
+                if(window.syncHistoryToCloud) window.syncHistoryToCloud();
                 checkAndRenderAll();
                 alert("Orele săptămânale au fost resetate cu succes!");
             }
@@ -854,11 +893,11 @@
             const reason = document.getElementById('cancelReasonInput').value.trim();
             if (!reason) return alert("Motivul de anulare este OBLIGATORIU!");
 
-            const log = historyLogs.find(h => h.id === currentCancelTargetId);
+            const log = window.historyLogs.find(h => h.id === currentCancelTargetId);
             if (log) {
                 log.status = 'Anulat';
                 log.cancelReason = reason;
-                saveHistory();
+                if(window.syncHistoryToCloud) window.syncHistoryToCloud();
                 renderHistoryTable();
                 renderWeeklyTable();
             }
@@ -911,10 +950,6 @@
             const secs = totalSec % 60;
             return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
-
-        function saveEmployees() { localStorage.setItem('employees', JSON.stringify(employees)); }
-        function savePontajs() { localStorage.setItem('activePontajs', JSON.stringify(activePontajs)); }
-        function saveHistory() { localStorage.setItem('historyLogs', JSON.stringify(historyLogs)); }
     </script>
 </body>
 </html>
