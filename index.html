@@ -151,8 +151,8 @@
 
         <!-- Section: PONTAJ SAPTAMANAL -->
         <section id="section-saptamanal" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-amber-200"><i class="fa-solid fa-chart-pie text-amber-400 mr-2"></i>Raport Ore Săptămânale - Montevaro</h2>
                         <p class="text-xs text-amber-200/60">Totalul orelor efectuate de membri în săptămâna în curs.</p>
@@ -162,6 +162,11 @@
                             <i class="fa-solid fa-rotate-right"></i> Resetează Toți Membrii
                         </button>
                     </div>
+                </div>
+
+                <!-- Search bar for weekly report -->
+                <div class="w-full sm:w-72">
+                    <input type="text" id="weeklySearch" onkeyup="renderWeeklyTable()" placeholder="Caută după nume sau ID..." class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div class="overflow-x-auto">
@@ -186,8 +191,8 @@
 
         <!-- Section: TABEL ANGAJATI -->
         <section id="section-angajati" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div class="bg-[#16110e] border border-amber-900/40 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-amber-200">Registru Oficial Membri Montevaro</h2>
                         <p class="text-xs text-amber-200/60">Adăugarea se face obligatoriu pe baza Discord ID-ului numeric.</p>
@@ -197,6 +202,11 @@
                             <i class="fa-solid fa-user-plus"></i> Adaugă Membru cu Discord ID
                         </button>
                     </div>
+                </div>
+
+                <!-- Search bar for employees registry -->
+                <div class="w-full sm:w-72">
+                    <input type="text" id="employeeSearch" onkeyup="renderEmployeesTable()" placeholder="Caută membru în registru..." class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div class="overflow-x-auto">
@@ -620,7 +630,6 @@
                 const endTime = new Date();
                 const startTime = new Date(pontaj.startTime);
                 
-                // TIMPUL INCLUDE SI PAUZA (Timpul total de când a pornit pontajul)
                 const workedSec = Math.max(0, Math.floor((endTime - startTime) / 1000));
 
                 window.historyLogs.unshift({
@@ -686,8 +695,6 @@
 
             if (pontaj) {
                 const now = new Date();
-                
-                // TIMPUL SE CONTORIZEAZA COMPLET (INCLUSIV PAUZA)
                 const totalWorkedSec = Math.floor((now - new Date(pontaj.startTime)) / 1000);
                 
                 let currentPauseSec = pontaj.pauseUsedSec || 0;
@@ -735,9 +742,7 @@
 
             const now = new Date();
             table.innerHTML = window.activePontajs.map(p => {
-                // Timpul total include pauza
                 const totalWorkedSec = Math.floor((now - new Date(p.startTime)) / 1000);
-                
                 let currentPauseSec = p.pauseUsedSec || 0;
                 if (p.isPaused) currentPauseSec += Math.floor((now - new Date(p.pauseStart)) / 1000);
 
@@ -755,12 +760,19 @@
 
         function renderEmployeesTable() {
             const table = document.getElementById('employeesTable');
-            if (window.employees.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru adăugat cu Discord ID în registru.</td></tr>`;
+            const searchInput = document.getElementById('employeeSearch');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+            const filteredEmployees = window.employees.filter(e => 
+                e.name.toLowerCase().includes(query) || String(e.discordId).toLowerCase().includes(query)
+            );
+
+            if (filteredEmployees.length === 0) {
+                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru găsit.</td></tr>`;
                 return;
             }
 
-            table.innerHTML = window.employees.map(e => `
+            table.innerHTML = filteredEmployees.map(e => `
                 <tr class="hover:bg-amber-950/20">
                     <td class="p-3 font-medium text-amber-100">${e.name}</td>
                     <td class="p-3 font-mono text-xs text-amber-400">${e.discordId}</td>
@@ -775,12 +787,19 @@
 
         function renderWeeklyTable() {
             const table = document.getElementById('weeklyTable');
-            if (window.employees.length === 0) {
-                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/40 italic">Niciun membru înregistrat.</td></tr>`;
+            const searchInput = document.getElementById('weeklySearch');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+            const filteredEmployees = window.employees.filter(e => 
+                e.name.toLowerCase().includes(query) || String(e.discordId).toLowerCase().includes(query)
+            );
+
+            if (filteredEmployees.length === 0) {
+                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/40 italic">Niciun membru găsit.</td></tr>`;
                 return;
             }
 
-            table.innerHTML = window.employees.map(e => {
+            table.innerHTML = filteredEmployees.map(e => {
                 const userLogs = window.historyLogs.filter(h => String(h.discordId) === String(e.discordId) && h.status === 'Valabil');
                 const totalSec = userLogs.reduce((acc, log) => acc + (log.workedSec || 0), 0);
                 const shiftCount = userLogs.length;
@@ -812,7 +831,6 @@
             }).join('');
         }
 
-        // FUNCTII SETARI PONTAJ INDIVIDUAL PENTRU MEMBRI
         function resetMemberPontaj(discordId) {
             if (!isBoss()) return;
             const emp = window.employees.find(e => String(e.discordId) === String(discordId));
