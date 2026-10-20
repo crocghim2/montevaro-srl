@@ -400,7 +400,9 @@
             "1416539258973589685",
             "1416539113087041567",
             "1416538825814966362",
-            "1416530432190582846"
+            "1416530432190582846",
+            "1416539746414493877",
+            "1416539879323599011"
         ];
 
         const DISCORD_ROLES = {
@@ -602,7 +604,6 @@
             }
         }
 
-        // FUNCTIE PENTRU OPRIREA PONTAJULUI (PROPRIU SAU AL ALTUI MEMBRU DE CATRE BOSS/SUPERVIZOR)
         function stopPontajForUser(discordId) {
             const index = window.activePontajs.findIndex(p => String(p.discordId) === String(discordId));
             if (index === -1) return;
