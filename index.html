@@ -193,11 +193,11 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-amber-200">Registru Oficial Membri Montevaro</h2>
-                        <p class="text-xs text-amber-200/60">Adăugarea se face obligatoriu pe baza Discord ID-ului numeric.</p>
+                        <p class="text-xs text-amber-200/60">Adăugarea se face pe baza Discord ID-ului și a numărului de buletin.</p>
                     </div>
                     <div id="addEmployeeContainer" class="hidden">
                         <button onclick="openAddEmployeeModal()" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg">
-                            <i class="fa-solid fa-user-plus"></i> Adaugă Membru cu Discord ID
+                            <i class="fa-solid fa-user-plus"></i> Adaugă Membru cu Buletin
                         </button>
                     </div>
                 </div>
@@ -212,7 +212,8 @@
                         <thead class="text-xs uppercase bg-[#0f0b08] text-amber-400/70 border-b border-amber-900/40">
                             <tr>
                                 <th class="p-3">Nume / Membru</th>
-                                <th class="p-3">Discord ID (Obligatoriu)</th>
+                                <th class="p-3">Nr. Buletin</th>
+                                <th class="p-3">Discord ID</th>
                                 <th class="p-3">Grad Discord</th>
                                 <th class="p-3">Data Înregistrării</th>
                                 <th class="p-3 text-right">Acțiuni</th>
@@ -273,7 +274,7 @@
                             <i class="fa-solid fa-check-circle text-emerald-500"></i> Reguli Pontaj
                         </h3>
                         <ul class="text-xs text-amber-200/80 space-y-1.5 list-disc list-inside leading-relaxed">
-                            <li>Doar membrii adăugați de un Boss cu Discord ID pot porni pontajul.</li>
+                            <li>Doar membrii adăugați de un Boss cu Discord ID și Buletin pot porni pontajul.</li>
                             <li>Supervizorii și Boss pot opri pontajul altor membri dacă este cazul.</li>
                             <li>Anularea intenționat eronată a pontajelor se pedepsește direct.</li>
                         </ul>
@@ -295,11 +296,11 @@
 
     </main>
 
-    <!-- Modal: Adaugare Angajat prin Discord ID -->
+    <!-- Modal: Adaugare Angajat prin Buletin & Discord ID -->
     <div id="addEmployeeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[#16110e] border border-amber-900/60 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-amber-900/40 pb-3">
-                <h3 class="font-bold text-amber-200">Adaugă Membru (Discord ID Mandatory)</h3>
+                <h3 class="font-bold text-amber-200">Adaugă Membru (Buletin & Discord ID)</h3>
                 <button onclick="closeAddEmployeeModal()" class="text-amber-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
@@ -308,9 +309,12 @@
                     <input type="text" id="newEmpName" placeholder="ex: Mateo Montevaro" class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
+                    <label class="block text-xs font-bold text-amber-400/80 mb-1">Număr Buletin (ID In-Game) *</label>
+                    <input type="text" id="newEmpBuletin" placeholder="ex: 4521" class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500 font-mono">
+                </div>
+                <div>
                     <label class="block text-xs font-bold text-amber-400 mb-1">Discord ID Numeric (Obligatoriu) *</label>
                     <input type="text" id="newEmpDiscordId" placeholder="ex: 1416544089041670266" class="w-full bg-[#0f0b08] border border-amber-900/40 text-sm rounded-xl px-3 py-2 text-amber-100 focus:outline-none focus:border-amber-500 font-mono">
-                    <p class="text-[10px] text-amber-200/50 mt-1">Apasă click dreapta pe utilizatorul de Discord -> Copy User ID.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-amber-400/80 mb-1">Grad Afacere / Discord</label>
@@ -394,6 +398,10 @@
         const GUILD_ID = "1416528931762340023";
         const REDIRECT_URI = "https://crocghim2.github.io/montevaro-srl/";
 
+        // Discord Webhooks
+        const WEBHOOK_PONTAJ = "https://discord.com/api/webhooks/1564298050652864692/tkl9g6JC3nDyF3G43AkS_Vkl2NH1t5yLe8J1kS09SwRk4-xxQak0UNP3VEDlKjkx1Qvs";
+        const WEBHOOK_ANGAJATI = "https://discord.com/api/webhooks/1564298385174036511/NHUn4gb8ayNOWo_XTvWlhSXwC4E9YoPiZiv_v2XidSyTKkhvmrbuc-dufS_N_fXM5db8";
+
         const ALLOWED_DUTY_ROLES = [
             "1416544089041670266",
             "1416742507521249431",
@@ -424,6 +432,14 @@
 
             setInterval(updateTimerUI, 1000);
         });
+
+        function sendDiscordWebhook(url, content) {
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: content })
+            }).catch(err => console.error("Webhook error:", err));
+        }
 
         function loginWithDiscord() {
             const oauth2Url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20guilds.members.read`;
@@ -599,12 +615,14 @@
                     pauseUsedSec: 0
                 });
 
+                sendDiscordWebhook(WEBHOOK_PONTAJ, `🟢 **${currentUser.name}** a intrat **ON DUTY**.`);
+
                 if(window.syncPontajsToCloud) window.syncPontajsToCloud();
                 checkAndRenderAll();
             }
         }
 
-        function stopPontajForUser(discordId) {
+        function stopPontajForUser(discordId, stoppedBySupervisor = false) {
             const index = window.activePontajs.findIndex(p => String(p.discordId) === String(discordId));
             if (index === -1) return;
 
@@ -629,6 +647,12 @@
 
             window.activePontajs.splice(index, 1);
 
+            let msg = `🔴 **${pontaj.name}** a ieșit **OFF DUTY**. Timp lucrat: **${formatSeconds(workedSec)}**.`;
+            if (stoppedBySupervisor) {
+                msg = `⚠️ **${pontaj.name}** a fost oprit **FORȚAT** de un Supervizor/Boss. Timp lucrat: **${formatSeconds(workedSec)}**.`;
+            }
+            sendDiscordWebhook(WEBHOOK_PONTAJ, msg);
+
             if(window.syncPontajsToCloud) window.syncPontajsToCloud();
             if(window.syncHistoryToCloud) window.syncHistoryToCloud();
             checkAndRenderAll();
@@ -640,7 +664,7 @@
             if (!pontaj) return;
 
             if (confirm(`Ești sigur că dorești să oprești tura lui ${pontaj.name}?`)) {
-                stopPontajForUser(discordId);
+                stopPontajForUser(discordId, true);
             }
         }
 
@@ -654,9 +678,11 @@
                 pontaj.pauseUsedSec = (pontaj.pauseUsedSec || 0) + pauseDuration;
                 pontaj.isPaused = false;
                 pontaj.pauseStart = null;
+                sendDiscordWebhook(WEBHOOK_PONTAJ, `▶️ **${currentUser.name}** a revenit din pauză și a reluat pontajul.`);
             } else {
                 pontaj.isPaused = true;
                 pontaj.pauseStart = new Date().toISOString();
+                sendDiscordWebhook(WEBHOOK_PONTAJ, `☕ **${currentUser.name}** a intrat în **PAUZĂ**.`);
             }
 
             if(window.syncPontajsToCloud) window.syncPontajsToCloud();
@@ -752,17 +778,18 @@
             const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
             const filteredEmployees = window.employees.filter(e => 
-                e.name.toLowerCase().includes(query) || String(e.discordId).toLowerCase().includes(query)
+                e.name.toLowerCase().includes(query) || String(e.discordId).toLowerCase().includes(query) || String(e.buletin).toLowerCase().includes(query)
             );
 
             if (filteredEmployees.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-200/40 italic">Niciun membru găsit.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/40 italic">Niciun membru găsit.</td></tr>`;
                 return;
             }
 
             table.innerHTML = filteredEmployees.map(e => `
                 <tr class="hover:bg-amber-950/20">
                     <td class="p-3 font-medium text-amber-100">${e.name}</td>
+                    <td class="p-3 font-mono text-xs text-amber-300 font-bold">${e.buletin || '-'}</td>
                     <td class="p-3 font-mono text-xs text-amber-400">${e.discordId}</td>
                     <td class="p-3">${getRankBadgeHTML(e.rank)}</td>
                     <td class="p-3 text-xs text-amber-200/60">${e.dateAdded}</td>
@@ -934,10 +961,12 @@
 
         function saveNewEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
+            const buletin = document.getElementById('newEmpBuletin').value.trim();
             const discordId = document.getElementById('newEmpDiscordId').value.trim();
             const rank = document.getElementById('newEmpRank').value;
 
             if (!name) return alert("Introduceți numele membrului!");
+            if (!buletin) return alert("Introduceți numărul buletinului!");
             if (!discordId || isNaN(discordId) || discordId.length < 15) {
                 return alert("Introduceți un Discord ID numeric valid (ex: 1416544089041670266)!");
             }
@@ -949,14 +978,18 @@
             window.employees.push({
                 id: Date.now(),
                 name: name,
+                buletin: buletin,
                 discordId: discordId,
                 rank: rank,
                 dateAdded: new Date().toISOString().split('T')[0]
             });
 
+            sendDiscordWebhook(WEBHOOK_ANGAJATI, `📝 **Membru Nou Adăugat**\n👤 **Nume:** ${name}\n🪪 **Buletin:** ${buletin}\n🆔 **Discord ID:** ${discordId}\n⭐ **Grad:** ${rank}\n🛡️ **Adăugat de:** ${currentUser ? currentUser.name : 'Necunoscut'}`);
+
             if(window.syncEmployeesToCloud) window.syncEmployeesToCloud();
             closeAddEmployeeModal();
             document.getElementById('newEmpName').value = '';
+            document.getElementById('newEmpBuletin').value = '';
             document.getElementById('newEmpDiscordId').value = '';
             checkAndRenderAll();
         }
